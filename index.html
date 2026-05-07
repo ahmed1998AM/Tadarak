@@ -481,7 +481,7 @@
                 </button>
             </form>
             <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-light);">
-                المدير الافتراضي: a12345mostafa@gmail.com / hacker1998AM
+                المدير الافتراضي: a12345.mostafa@gmail.com / hacker1998AM
             </p>
         </div>
     </div>
@@ -686,7 +686,27 @@
                                 <option value="blue">أزرق</option>
                             </select>
                         </div>
-                        <button class="btn" onclick="alert('تم الحفظ')">حفظ التغييرات</button>
+                        <button class="btn" onclick="settings.save()">حفظ التغييرات</button>
+                        
+                        <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--border-color);">
+                        
+                        <h4>تغيير كلمة المرور</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem;">يمكنك تغيير كلمة المرور الخاصة بحسابك</p>
+                        <div class="input-group">
+                            <label>كلمة المرور الحالية</label>
+                            <input type="password" id="change-pass-current" placeholder="••••••••">
+                        </div>
+                        <div class="input-group">
+                            <label>كلمة المرور الجديدة</label>
+                            <input type="password" id="change-pass-new" placeholder="••••••••">
+                        </div>
+                        <div class="input-group">
+                            <label>تأكيد كلمة المرور الجديدة</label>
+                            <input type="password" id="change-pass-confirm" placeholder="••••••••">
+                        </div>
+                        <button class="btn" onclick="settings.changePassword()">
+                            <i class="fas fa-key"></i> تغيير كلمة المرور
+                        </button>
                         
                         <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--border-color);">
                         
@@ -814,7 +834,7 @@
         const auth = {
             currentUser: null,
             defaultAdmin: {
-                email: 'a12345mostafa@gmail.com',
+                email: 'a12345.mostafa@gmail.com',
                 password: 'hacker1998AM', // Will be hashed on first run
                 name: 'المدير العام',
                 role: 'admin',
@@ -853,6 +873,12 @@
                 const user = users.find(u => u.email === email && u.password === hashedPwd);
 
                 if (user) {
+                    // Check if user is blocked
+                    if(user.isBlocked) {
+                        alert('عذراً، هذا الحساب محظور. يرجى التواصل مع الإدارة.');
+                        return;
+                    }
+                    
                     auth.currentUser = user;
                     sessionStorage.setItem('hr_session', JSON.stringify(user));
                     document.getElementById('login-screen').style.display = 'none';
@@ -933,6 +959,7 @@
                 const pass = document.getElementById('emp-password').value;
                 const dept = document.getElementById('emp-dept').value;
                 const role = document.getElementById('emp-role').value;
+                const isBlocked = document.getElementById('emp-blocked')?.checked || false;
 
                 let users = employees.getAll();
                 
@@ -943,6 +970,7 @@
                         users[index].name = name;
                         users[index].dept = dept;
                         users[index].role = role;
+                        users[index].isBlocked = isBlocked;
                         if(pass) {
                             utils.hash(pass).then(hashed => {
                                 users[index].password = hashed;
@@ -960,7 +988,7 @@
                     if(users.find(u => u.email === email)) return alert('البريد الإلكتروني موجود مسبقاً');
                     
                     utils.hash(pass).then(hashed => {
-                        users.push({ id: utils.generateId(), name, email, password: hashed, dept, role });
+                        users.push({ id: utils.generateId(), name, email, password: hashed, dept, role, isBlocked: false });
                         utils.setStore('hr_users', users);
                         ui.closeModal('modal-employee');
                         employees.render();
@@ -979,17 +1007,19 @@
                 tbody.innerHTML = '';
                 const users = employees.getAll();
                 users.forEach(u => {
-                    if(u.role === 'admin' && auth.currentUser.role !== 'admin') return; // Hide admins from normal users if needed
+                    if(u.role === 'admin' && auth.currentUser.role !== 'admin') return;
                     
                     const tr = document.createElement('tr');
+                    const blockedBadge = u.isBlocked ? '<span class="badge badge-danger">محظور</span>' : '';
                     tr.innerHTML = `
-                        <td>${u.name}</td>
+                        <td>${u.name} ${blockedBadge}</td>
                         <td>${u.dept}</td>
                         <td>${u.email}</td>
                         <td><span class="badge ${u.role==='admin'?'badge-danger':'badge-info'}">${u.role}</span></td>
                         <td>
                             ${auth.currentUser.role === 'admin' ? `
                             <button class="icon-btn" onclick="employees.edit('${u.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="icon-btn" style="color:var(--warning-color)" onclick="employees.toggleBlock('${u.id}')" title="${u.isBlocked ? 'إلغاء الحظر' : 'حظر'}"><i class="fas ${u.isBlocked ? 'fa-unlock' : 'fa-lock'}"></i></button>
                             <button class="icon-btn" style="color:var(--danger-color)" onclick="employees.delete('${u.id}')"><i class="fas fa-trash"></i></button>
                             ` : '-'}
                         </td>
@@ -1012,15 +1042,66 @@
                 document.getElementById('emp-role').value = u.role;
                 document.getElementById('emp-password').required = false;
                 document.getElementById('emp-password').placeholder = 'اتركه فارغاً لعدم التغيير';
+                
+                // Add blocked checkbox if not exists
+                let blockedCheckbox = document.getElementById('emp-blocked');
+                if (!blockedCheckbox) {
+                    const div = document.createElement('div');
+                    div.className = 'input-group';
+                    div.innerHTML = `<label><input type="checkbox" id="emp-blocked"> حظر الموظف</label>`;
+                    document.getElementById('emp-password').parentElement.after(div);
+                }
+                document.getElementById('emp-blocked').checked = u.isBlocked || false;
+                
                 document.getElementById('modal-employee').style.display = 'flex';
             },
+            toggleBlock: (id) => {
+                if(confirm('هل أنت متأكد من تغيير حالة الحظر؟')) {
+                    let users = employees.getAll();
+                    const index = users.findIndex(u => u.id === id);
+                    if(index !== -1) {
+                        users[index].isBlocked = !users[index].isBlocked;
+                        utils.setStore('hr_users', users);
+                        employees.render();
+                    }
+                }
+            },
             delete: (id) => {
-                if(confirm('هل أنت متأكد من الحذف؟')) {
+                if(confirm('هل أنت متأكد من الحذف نهائياً؟ لا يمكن التراجع عن هذا الإجراء.')) {
                     let users = employees.getAll().filter(u => u.id !== id);
                     utils.setStore('hr_users', users);
                     employees.render();
                     dashboard.update();
                 }
+            },
+            changePassword: async (currentPass, newPass) => {
+                if(!auth.currentUser) return false;
+                const userIndex = auth.currentUser.id;
+                let users = employees.getAll();
+                const user = users.find(u => u.id === userIndex);
+                
+                if(!user) return false;
+                
+                // Verify current password
+                const hashedCurrent = await utils.hash(currentPass);
+                if(hashedCurrent !== user.password) {
+                    return false; // Wrong password
+                }
+                
+                // Set new password
+                const hashedNew = await utils.hash(newPass);
+                user.password = hashedNew;
+                
+                // Update in storage
+                const idx = users.findIndex(u => u.id === userIndex);
+                users[idx] = user;
+                utils.setStore('hr_users', users);
+                
+                // Update session
+                auth.currentUser = user;
+                sessionStorage.setItem('hr_session', JSON.stringify(user));
+                
+                return true;
             }
         };
 
@@ -1251,12 +1332,44 @@
             save: () => {
                 const company = document.getElementById('setting-company').value;
                 localStorage.setItem('hr_company', company);
-                alert('تم الحفظ');
+                alert('تم الحفظ بنجاح');
+                settings.load();
             },
             load: () => {
                 const company = localStorage.getItem('hr_company') || 'شركتي';
                 document.getElementById('setting-company').value = company;
                 document.querySelector('.brand span').textContent = company;
+            },
+            changePassword: async () => {
+                const currentPass = document.getElementById('change-pass-current').value;
+                const newPass = document.getElementById('change-pass-new').value;
+                const confirmPass = document.getElementById('change-pass-confirm').value;
+                
+                if(!currentPass || !newPass || !confirmPass) {
+                    alert('الرجاء تعبئة جميع الحقول');
+                    return;
+                }
+                
+                if(newPass !== confirmPass) {
+                    alert('كلمتا المرور الجديدتان غير متطابقتين');
+                    return;
+                }
+                
+                if(newPass.length < 6) {
+                    alert('يجب أن تكون كلمة المرور الجديدة 6 أحرف على الأقل');
+                    return;
+                }
+                
+                const success = await employees.changePassword(currentPass, newPass);
+                
+                if(success) {
+                    alert('تم تغيير كلمة المرور بنجاح');
+                    document.getElementById('change-pass-current').value = '';
+                    document.getElementById('change-pass-new').value = '';
+                    document.getElementById('change-pass-confirm').value = '';
+                } else {
+                    alert('كلمة المرور الحالية غير صحيحة');
+                }
             }
         };
 
