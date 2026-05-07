@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة شؤون الموظفين</title>
+    <!-- خطوط جوجل -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #2E7D32; /* أخضر غامق */
+            --secondary-color: #4CAF50; /* أخضر فاتح */
+            --bg-color: #f5f7fa;
+            --sidebar-bg: #ffffff;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --danger-color: #d32f2f;
+            --warning-color: #f57c00;
+            --info-color: #1976d2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* القائمة الجانبية */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-left: 1px solid var(--border-color);
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            right: 0;
+            top: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 10px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .nav-links i {
+            margin-left: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* المحتوى الرئيسي */
+        .main-content {
+            margin-right: 260px;
+            width: calc(100% - 260px);
+            padding: 20px;
+            transition: margin-right 0.3s ease, width 0.3s ease;
+        }
+
+        header {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+
+        /* الأقسام */
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* البطاقات والإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 4px solid var(--primary-color);
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .stat-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #ddd;
+        }
+
+        /* النماذج والجداول */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1b5e20;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .btn-edit {
+            background-color: var(--info-color);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+
+        .btn-success {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #555;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .search-bar {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .status-active { background-color: var(--secondary-color); }
+        .status-returned { background-color: #9e9e9e; }
+        .status-pending { background-color: var(--warning-color); }
+        .status-done { background-color: var(--primary-color); }
+
+        /* التجاوب */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-right: 0;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- القائمة الجانبية -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-users-cog"></i> إدارة الموظفين
+        </div>
+        <ul class="nav-links">
+            <li><a onclick="showSection('dashboard')" class="active" id="nav-dashboard"><i class="fas fa-home"></i> لوحة التحكم</a></li>
+            <li><a onclick="showSection('employees')" id="nav-employees"><i class="fas fa-user-tie"></i> الموظفين</a></li>
+            <li><a onclick="showSection('custody')" id="nav-custody"><i class="fas fa-boxes"></i> العهد</a></li>
+            <li><a onclick="showSection('expenses')" id="nav-expenses"><i class="fas fa-file-invoice-dollar"></i> المصروفات</a></li>
+            <li><a onclick="showSection('transfers')" id="nav-transfers"><i class="fas fa-exchange-alt"></i> الانتقالات</a></li>
+            <li><a onclick="showSection('tasks')" id="nav-tasks"><i class="fas fa-tasks"></i> المهام</a></li>
+        </ul>
+    </aside>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content">
+        <header>
+            <div class="menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <h2 id="page-title">لوحة التحكم</h2>
+            <div style="font-size: 0.9rem; color: #666;" id="current-date"></div>
+        </header>
+
+        <!-- قسم لوحة التحكم -->
+        <section id="dashboard" class="section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3 id="stat-emp-count">0</h3>
+                        <p>إجمالي الموظفين</p>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3 id="stat-custody-active">0</h3>
+                        <p>العهد النشطة</p>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-box-open"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3 id="stat-expenses-month">0</h3>
+                        <p>مصروفات هذا الشهر</p>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3 id="stat-tasks-pending">0</h3>
+                        <p>مهام قيد التنفيذ</p>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3><i class="fas fa-chart-line"></i> نظرة سريعة</h3>
+                <p style="margin-top: 10px; color: #666;">مرحباً بك في نظام إدارة شؤون الموظفين. استخدم القائمة الجانبية للتنقل بين الأقسام.</p>
+            </div>
+        </section>
+
+        <!-- قسم الموظفين -->
+        <section id="employees" class="section">
+            <div class="card">
+                <h3>إضافة موظف جديد</h3>
+                <form id="emp-form" onsubmit="handleEmployeeSubmit(event)">
+                    <input type="hidden" id="emp-id">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="form-group">
+                            <label>الاسم الرباعي</label>
+                            <input type="text" id="emp-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الرقم الوظيفي</label>
+                            <input type="text" id="emp-number" required>
+                        </div>
+                        <div class="form-group">
+                            <label>القسم</label>
+                            <input type="text" id="emp-dept" required>
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الهاتف</label>
+                            <input type="tel" id="emp-phone" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> حفظ البيانات</button>
+                    <button type="button" onclick="resetEmpForm()" style="background:#ccc; color:#333">إلغاء</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="search-bar">
+                    <input type="text" id="emp-search" placeholder="بحث بالاسم أو الرقم الوظيفي..." onkeyup="renderEmployees()">
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>م</th>
+                                <th>الاسم</th>
+                                <th>الرقم الوظيفي</th>
+                                <th>القسم</th>
+                                <th>الهاتف</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="emp-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم العهد -->
+        <section id="custody" class="section">
+            <div class="card">
+                <h3>تسجيل عهدة جديدة</h3>
+                <form id="custody-form" onsubmit="handleCustodySubmit(event)">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="form-group">
+                            <label>الموظف</label>
+                            <select id="custody-emp" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>اسم العهدة / الصنف</label>
+                            <input type="text" id="custody-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>تاريخ الاستلام</label>
+                            <input type="date" id="custody-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>القيمة التقديرية</label>
+                            <input type="number" id="custody-value" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-plus"></i> إضافة العهدة</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>سجل العهد</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الموظف</th>
+                                <th>العهدة</th>
+                                <th>تاريخ الاستلام</th>
+                                <th>القيمة</th>
+                                <th>الحالة</th>
+                                <th>تاريخ الرد</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="custody-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم المصروفات -->
+        <section id="expenses" class="section">
+            <div class="card">
+                <h3>إضافة مصروف جديد</h3>
+                <form id="expense-form" onsubmit="handleExpenseSubmit(event)">
+                    <input type="hidden" id="exp-id">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="form-group">
+                            <label>التاريخ</label>
+                            <input type="date" id="exp-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>المبلغ</label>
+                            <input type="number" id="exp-amount" required>
+                        </div>
+                        <div class="form-group">
+                            <label>البيان (وصف المصروف)</label>
+                            <input type="text" id="exp-desc" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الموظف المسؤول</label>
+                            <select id="exp-emp" required></select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> حفظ المصروف</button>
+                    <button type="button" onclick="resetExpForm()" style="background:#ccc; color:#333">إلغاء</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>تقرير المصروفات</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>البيان</th>
+                                <th>المبلغ</th>
+                                <th>الموظف</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expense-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الانتقالات -->
+        <section id="transfers" class="section">
+            <div class="card">
+                <h3>تسجيل نقل موظف</h3>
+                <form id="transfer-form" onsubmit="handleTransferSubmit(event)">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="form-group">
+                            <label>الموظف</label>
+                            <select id="transfer-emp" required onchange="updateTransferDept()"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>من قسم</label>
+                            <input type="text" id="transfer-from" readonly style="background:#f0f0f0">
+                        </div>
+                        <div class="form-group">
+                            <label>إلى قسم</label>
+                            <input type="text" id="transfer-to" required>
+                        </div>
+                        <div class="form-group">
+                            <label>تاريخ النقل</label>
+                            <input type="date" id="transfer-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>السبب</label>
+                            <input type="text" id="transfer-reason" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-exchange-alt"></i> تنفيذ النقل</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>سجل الانتقالات</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>الموظف</th>
+                                <th>من قسم</th>
+                                <th>إلى قسم</th>
+                                <th>السبب</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transfer-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم المهام -->
+        <section id="tasks" class="section">
+            <div class="card">
+                <h3>إضافة مهمة جديدة</h3>
+                <form id="task-form" onsubmit="handleTaskSubmit(event)">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="form-group">
+                            <label>عنوان المهمة</label>
+                            <input type="text" id="task-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الموظف المكلف</label>
+                            <select id="task-emp" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>تاريخ التسليم</label>
+                            <input type="date" id="task-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الحالة الأولية</label>
+                            <select id="task-status">
+                                <option value="pending">قيد التنفيذ</option>
+                                <option value="done">منجزة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-plus"></i> إضافة المهمة</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="search-bar">
+                    <select id="task-filter" onchange="renderTasks()" style="width: 200px;">
+                        <option value="all">كل الحالات</option>
+                        <option value="pending">قيد التنفيذ</option>
+                        <option value="done">منجزة</option>
+                    </select>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>المهمة</th>
+                                <th>المكلف</th>
+                                <th>تاريخ التسليم</th>
+                                <th>الحالة</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="task-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- تهيئة البيانات ---
+        const DB = {
+            employees: JSON.parse(localStorage.getItem('emp_employees')) || [],
+            custody: JSON.parse(localStorage.getItem('emp_custody')) || [],
+            expenses: JSON.parse(localStorage.getItem('emp_expenses')) || [],
+            transfers: JSON.parse(localStorage.getItem('emp_transfers')) || [],
+            tasks: JSON.parse(localStorage.getItem('emp_tasks')) || []
+        };
+
+        function saveData() {
+            localStorage.setItem('emp_employees', JSON.stringify(DB.employees));
+            localStorage.setItem('emp_custody', JSON.stringify(DB.custody));
+            localStorage.setItem('emp_expenses', JSON.stringify(DB.expenses));
+            localStorage.setItem('emp_transfers', JSON.stringify(DB.transfers));
+            localStorage.setItem('emp_tasks', JSON.stringify(DB.tasks));
+            updateDashboard();
+        }
+
+        // --- التنقل والواجهة ---
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+            document.getElementById('nav-' + sectionId).classList.add('active');
+
+            const titles = {
+                'dashboard': 'لوحة التحكم',
+                'employees': 'إدارة الموظفين',
+                'custody': 'سجل العهد',
+                'expenses': 'المصروفات',
+                'transfers': 'الانتقالات',
+                'tasks': 'المهام'
+            };
+            document.getElementById('page-title').innerText = titles[sectionId];
+
+            if(window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('show');
+            }
+
+            // تحديث القوائم المنسدلة عند فتح الأقسام
+            if(sectionId !== 'dashboard') populateSelects();
+            
+            // إعادة رسم الجداول
+            if(sectionId === 'employees') renderEmployees();
+            if(sectionId === 'custody') renderCustody();
+            if(sectionId === 'expenses') renderExpenses();
+            if(sectionId === 'transfers') renderTransfers();
+            if(sectionId === 'tasks') renderTasks();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+        }
+
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('ar-EG');
+
+        // --- دوال مساعدة ---
+        function generateId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function populateSelects() {
+            const selects = ['custody-emp', 'exp-emp', 'transfer-emp', 'task-emp'];
+            const options = DB.employees.map(emp => `<option value="${emp.id}">${emp.name} (${emp.dept})</option>`).join('');
+            
+            selects.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.innerHTML = '<option value="">اختر الموظف...</option>' + options;
+            });
+        }
+
+        function updateTransferDept() {
+            const empId = document.getElementById('transfer-emp').value;
+            const emp = DB.employees.find(e => e.id === empId);
+            document.getElementById('transfer-from').value = emp ? emp.dept : '';
+        }
+
+        // --- إدارة الموظفين ---
+        function handleEmployeeSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('emp-id').value;
+            const data = {
+                id: id || generateId(),
+                name: document.getElementById('emp-name').value,
+                number: document.getElementById('emp-number').value,
+                dept: document.getElementById('emp-dept').value,
+                phone: document.getElementById('emp-phone').value
+            };
+
+            if(id) {
+                const index = DB.employees.findIndex(x => x.id === id);
+                DB.employees[index] = data;
+            } else {
+                DB.employees.push(data);
+            }
+
+            saveData();
+            resetEmpForm();
+            renderEmployees();
+            alert('تم الحفظ بنجاح');
+        }
+
+        function resetEmpForm() {
+            document.getElementById('emp-form').reset();
+            document.getElementById('emp-id').value = '';
+        }
+
+        function editEmployee(id) {
+            const emp = DB.employees.find(x => x.id === id);
+            document.getElementById('emp-id').value = emp.id;
+            document.getElementById('emp-name').value = emp.name;
+            document.getElementById('emp-number').value = emp.number;
+            document.getElementById('emp-dept').value = emp.dept;
+            document.getElementById('emp-phone').value = emp.phone;
+            window.scrollTo(0, 0);
+        }
+
+        function deleteEmployee(id) {
+            if(confirm('هل أنت متأكد من الحذف؟')) {
+                DB.employees = DB.employees.filter(x => x.id !== id);
+                saveData();
+                renderEmployees();
+            }
+        }
+
+        function renderEmployees() {
+            const search = document.getElementById('emp-search').value.toLowerCase();
+            const tbody = document.getElementById('emp-table-body');
+            tbody.innerHTML = '';
+
+            DB.employees.filter(e => e.name.toLowerCase().includes(search) || e.number.includes(search))
+                .forEach((e, index) => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${e.name}</td>
+                            <td>${e.number}</td>
+                            <td>${e.dept}</td>
+                            <td>${e.phone}</td>
+                            <td>
+                                <button class="btn-edit" onclick="editEmployee('${e.id}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn-danger" onclick="deleteEmployee('${e.id}')"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+        }
+
+        // --- إدارة العهد ---
+        function handleCustodySubmit(e) {
+            e.preventDefault();
+            const data = {
+                id: generateId(),
+                empId: document.getElementById('custody-emp').value,
+                name: document.getElementById('custody-name').value,
+                date: document.getElementById('custody-date').value,
+                value: document.getElementById('custody-value').value,
+                status: 'active',
+                returnDate: ''
+            };
+            DB.custody.push(data);
+            saveData();
+            document.getElementById('custody-form').reset();
+            renderCustody();
+            alert('تم تسجيل العهدة');
+        }
+
+        function returnCustody(id) {
+            const item = DB.custody.find(x => x.id === id);
+            if(item) {
+                item.status = 'returned';
+                item.returnDate = new Date().toISOString().split('T')[0];
+                saveData();
+                renderCustody();
+            }
+        }
+
+        function deleteCustody(id) {
+            if(confirm('حذف السجل؟')) {
+                DB.custody = DB.custody.filter(x => x.id !== id);
+                saveData();
+                renderCustody();
+            }
+        }
+
+        function renderCustody() {
+            const tbody = document.getElementById('custody-table-body');
+            tbody.innerHTML = '';
+            DB.custody.forEach(c => {
+                const emp = DB.employees.find(e => e.id === c.empId);
+                const statusClass = c.status === 'active' ? 'status-active' : 'status-returned';
+                const statusText = c.status === 'active' ? 'مستمرة' : 'مُعادة';
+                const actionBtn = c.status === 'active' 
+                    ? `<button class="btn-success" onclick="returnCustody('${c.id}')"><i class="fas fa-undo"></i> إرجاع</button>` 
+                    : '';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${emp ? emp.name : 'غير معروف'}</td>
+                        <td>${c.name}</td>
+                        <td>${c.date}</td>
+                        <td>${c.value}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>${c.returnDate || '-'}</td>
+                        <td>
+                            ${actionBtn}
+                            <button class="btn-danger" onclick="deleteCustody('${c.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- إدارة المصروفات ---
+        function handleExpenseSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('exp-id').value;
+            const data = {
+                id: id || generateId(),
+                date: document.getElementById('exp-date').value,
+                amount: document.getElementById('exp-amount').value,
+                desc: document.getElementById('exp-desc').value,
+                empId: document.getElementById('exp-emp').value
+            };
+
+            if(id) {
+                const index = DB.expenses.findIndex(x => x.id === id);
+                DB.expenses[index] = data;
+            } else {
+                DB.expenses.push(data);
+            }
+
+            saveData();
+            resetExpForm();
+            renderExpenses();
+            alert('تم الحفظ');
+        }
+
+        function resetExpForm() {
+            document.getElementById('expense-form').reset();
+            document.getElementById('exp-id').value = '';
+        }
+
+        function editExpense(id) {
+            const exp = DB.expenses.find(x => x.id === id);
+            document.getElementById('exp-id').value = exp.id;
+            document.getElementById('exp-date').value = exp.date;
+            document.getElementById('exp-amount').value = exp.amount;
+            document.getElementById('exp-desc').value = exp.desc;
+            document.getElementById('exp-emp').value = exp.empId;
+            window.scrollTo(0, 0);
+        }
+
+        function deleteExpense(id) {
+            if(confirm('حذف المصروف؟')) {
+                DB.expenses = DB.expenses.filter(x => x.id !== id);
+                saveData();
+                renderExpenses();
+            }
+        }
+
+        function renderExpenses() {
+            const tbody = document.getElementById('expense-table-body');
+            tbody.innerHTML = '';
+            // ترتيب حسب التاريخ تنازلياً
+            const sorted = [...DB.expenses].sort((a,b) => new Date(b.date) - new Date(a.date));
+            
+            sorted.forEach(exp => {
+                const emp = DB.employees.find(e => e.id === exp.empId);
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${exp.date}</td>
+                        <td>${exp.desc}</td>
+                        <td>${exp.amount}</td>
+                        <td>${emp ? emp.name : '-'}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editExpense('${exp.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn-danger" onclick="deleteExpense('${exp.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- إدارة الانتقالات ---
+        function handleTransferSubmit(e) {
+            e.preventDefault();
+            const empId = document.getElementById('transfer-emp').value;
+            const newDept = document.getElementById('transfer-to').value;
+            
+            // تحديث قسم الموظف
+            const empIndex = DB.employees.findIndex(x => x.id === empId);
+            if(empIndex > -1) {
+                DB.employees[empIndex].dept = newDept;
+            }
+
+            // تسجيل الحركة
+            DB.transfers.push({
+                id: generateId(),
+                empId: empId,
+                from: document.getElementById('transfer-from').value,
+                to: newDept,
+                date: document.getElementById('transfer-date').value,
+                reason: document.getElementById('transfer-reason').value
+            });
+
+            saveData();
+            document.getElementById('transfer-form').reset();
+            document.getElementById('transfer-from').value = '';
+            renderTransfers();
+            alert('تم تنفيذ النقل وتحديث بيانات الموظف');
+        }
+
+        function renderTransfers() {
+            const tbody = document.getElementById('transfer-table-body');
+            tbody.innerHTML = '';
+            DB.transfers.forEach(t => {
+                const emp = DB.employees.find(e => e.id === t.empId);
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${t.date}</td>
+                        <td>${emp ? emp.name : 'موظف محذوف'}</td>
+                        <td>${t.from}</td>
+                        <td>${t.to}</td>
+                        <td>${t.reason}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- إدارة المهام ---
+        function handleTaskSubmit(e) {
+            e.preventDefault();
+            DB.tasks.push({
+                id: generateId(),
+                title: document.getElementById('task-title').value,
+                empId: document.getElementById('task-emp').value,
+                date: document.getElementById('task-date').value,
+                status: document.getElementById('task-status').value
+            });
+            saveData();
+            document.getElementById('task-form').reset();
+            renderTasks();
+            alert('تمت إضافة المهمة');
+        }
+
+        function toggleTaskStatus(id) {
+            const task = DB.tasks.find(x => x.id === id);
+            task.status = task.status === 'pending' ? 'done' : 'pending';
+            saveData();
+            renderTasks();
+        }
+
+        function deleteTask(id) {
+            if(confirm('حذف المهمة؟')) {
+                DB.tasks = DB.tasks.filter(x => x.id !== id);
+                saveData();
+                renderTasks();
+            }
+        }
+
+        function renderTasks() {
+            const filter = document.getElementById('task-filter').value;
+            const tbody = document.getElementById('task-table-body');
+            tbody.innerHTML = '';
+
+            DB.tasks.filter(t => filter === 'all' || t.status === filter).forEach(t => {
+                const emp = DB.employees.find(e => e.id === t.empId);
+                const statusClass = t.status === 'pending' ? 'status-pending' : 'status-done';
+                const statusText = t.status === 'pending' ? 'قيد التنفيذ' : 'منجزة';
+                const btnText = t.status === 'pending' ? 'إنجاز' : 'إعادة فتح';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${t.title}</td>
+                        <td>${emp ? emp.name : '-'}</td>
+                        <td>${t.date}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <button class="btn-success" onclick="toggleTaskStatus('${t.id}')">${btnText}</button>
+                            <button class="btn-danger" onclick="deleteTask('${t.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- لوحة التحكم ---
+        function updateDashboard() {
+            document.getElementById('stat-emp-count').innerText = DB.employees.length;
+            document.getElementById('stat-custody-active').innerText = DB.custody.filter(c => c.status === 'active').length;
+            
+            const currentMonth = new Date().getMonth();
+            const monthExpenses = DB.expenses
+                .filter(e => new Date(e.date).getMonth() === currentMonth)
+                .reduce((sum, e) => sum + Number(e.amount), 0);
+            document.getElementById('stat-expenses-month').innerText = monthExpenses.toLocaleString();
+
+            document.getElementById('stat-tasks-pending').innerText = DB.tasks.filter(t => t.status === 'pending').length;
+        }
+
+        // التشغيل الأولي
+        updateDashboard();
+        showSection('dashboard');
+
+    </script>
+</body>
+</html>
