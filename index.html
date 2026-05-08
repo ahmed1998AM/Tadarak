@@ -67,6 +67,119 @@
         </div>
     </div>
 
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content profile-modal-content">
+            <div class="modal-header">
+                <h2 data-lang="myProfile">ملفي الشخصي</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="profile-tabs">
+                <button class="tab-btn active" data-tab="profile"><i class="fas fa-user"></i> <span data-lang="profile">الملف الشخصي</span></button>
+                <button class="tab-btn" data-tab="security"><i class="fas fa-shield-alt"></i> <span data-lang="security">الأمان</span></button>
+                <button class="tab-btn" data-tab="permissions"><i class="fas fa-key"></i> <span data-lang="permissions">الصلاحيات</span></button>
+            </div>
+            
+            <!-- Profile Tab -->
+            <div class="tab-content active" id="profileTab">
+                <div class="profile-header-section">
+                    <div class="avatar-upload-container">
+                        <img src="assets/images/default-avatar.png" alt="Profile" class="profile-avatar-large" id="profileAvatar">
+                        <label for="avatarUpload" class="avatar-upload-btn">
+                            <i class="fas fa-camera"></i>
+                            <span data-lang="changePhoto">تغيير الصورة</span>
+                        </label>
+                        <input type="file" id="avatarUpload" accept="image/*" hidden>
+                    </div>
+                    <div class="profile-info-badges">
+                        <span class="role-badge admin" id="profileRoleBadge">مدير النظام</span>
+                        <span class="status-badge active" id="profileStatusBadge">نشط</span>
+                    </div>
+                </div>
+                
+                <form id="profileForm" class="profile-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-lang="fullName">الاسم الكامل</label>
+                            <input type="text" id="profileName" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-lang="username">اسم المستخدم</label>
+                            <input type="text" id="profileUsername" disabled>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-lang="email">البريد الإلكتروني</label>
+                            <input type="email" id="profileEmail">
+                        </div>
+                        <div class="form-group">
+                            <label data-lang="phone">الهاتف</label>
+                            <input type="tel" id="profilePhone">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-lang="department">القسم</label>
+                            <input type="text" id="profileDepartment" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label data-lang="position">المنصب</label>
+                            <input type="text" id="profilePosition">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="joinDate">تاريخ الانضمام</label>
+                        <input type="text" id="profileJoinDate" disabled>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-lang="save">حفظ التغييرات</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Security Tab -->
+            <div class="tab-content" id="securityTab">
+                <form id="passwordForm" class="security-form">
+                    <div class="form-group">
+                        <label data-lang="currentPassword">كلمة المرور الحالية</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="currentPassword" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="newPassword">كلمة المرور الجديدة</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="newPassword" required minlength="6">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="confirmPassword">تأكيد كلمة المرور</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="confirmPassword" required minlength="6">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-lang="changePassword">تغيير كلمة المرور</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Permissions Tab -->
+            <div class="tab-content" id="permissionsTab">
+                <div class="permissions-container">
+                    <h3 data-lang="yourPermissions">صلاحياتك</h3>
+                    <div class="permissions-list" id="permissionsList">
+                        <!-- Permissions will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Main App Container -->
     <div id="appContainer" class="app-container hidden">
         <!-- Sidebar -->
@@ -853,6 +966,7 @@
     <script src="js/lang.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
     <script src="js/notifications.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/employees.js"></script>
