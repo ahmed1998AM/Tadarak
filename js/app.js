@@ -10,32 +10,55 @@ const AppState = {
 
 // ===== DOM Elements =====
 const elements = {
-    loadingScreen: document.getElementById('loadingScreen'),
-    loginPage: document.getElementById('loginPage'),
-    appContainer: document.getElementById('appContainer'),
-    sidebar: document.getElementById('sidebar'),
-    sidebarOverlay: document.getElementById('sidebarOverlay'),
-    toggleSidebar: document.getElementById('toggleSidebar'),
-    closeSidebar: document.getElementById('closeSidebar'),
-    themeToggle: document.getElementById('themeToggle'),
-    langToggle: document.getElementById('langToggle'),
-    logoutBtn: document.getElementById('logoutBtn'),
-    navItems: document.querySelectorAll('.nav-item'),
-    contentSections: document.querySelectorAll('.content-section'),
-    pageTitle: document.getElementById('pageTitle'),
-    userNameDisplay: document.getElementById('userNameDisplay'),
-    modalOverlay: document.getElementById('modalOverlay'),
-    employeeModal: document.getElementById('employeeModal')
+    loadingScreen: null,
+    loginPage: null,
+    appContainer: null,
+    sidebar: null,
+    sidebarOverlay: null,
+    toggleSidebar: null,
+    closeSidebar: null,
+    themeToggle: null,
+    langToggle: null,
+    logoutBtn: null,
+    navItems: [],
+    contentSections: [],
+    pageTitle: null,
+    userNameDisplay: null,
+    modalOverlay: null,
+    employeeModal: null
 };
+
+// Initialize DOM Elements after DOMContentLoaded
+function initElements() {
+    elements.loadingScreen = document.getElementById('loadingScreen');
+    elements.loginPage = document.getElementById('loginPage');
+    elements.appContainer = document.getElementById('appContainer');
+    elements.sidebar = document.getElementById('sidebar');
+    elements.sidebarOverlay = document.getElementById('sidebarOverlay');
+    elements.toggleSidebar = document.getElementById('sidebarToggle');
+    elements.closeSidebar = document.getElementById('closeSidebar');
+    elements.themeToggle = document.getElementById('themeToggle');
+    elements.langToggle = document.getElementById('languageSelect') || document.getElementById('langToggle');
+    elements.logoutBtn = document.getElementById('logoutBtn');
+    elements.navItems = document.querySelectorAll('.nav-item');
+    elements.contentSections = document.querySelectorAll('.page');
+    elements.pageTitle = document.getElementById('pageTitle');
+    elements.userNameDisplay = document.getElementById('userNameDisplay');
+    elements.modalOverlay = document.getElementById('modalOverlay');
+    elements.employeeModal = document.getElementById('employeeModal');
+}
 
 // ===== Initialize App =====
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize DOM Elements first
+    initElements();
+    
     // Hide loading screen
     setTimeout(() => {
         if (elements.loadingScreen) {
             elements.loadingScreen.classList.add('hidden');
         }
-    }, 1000);
+    }, 500);
 
     // Check authentication
     checkAuth();
@@ -45,6 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load saved preferences
     loadPreferences();
+    
+    // Apply initial theme and language
+    applyTheme();
+    applyTranslations();
 });
 
 // ===== Event Listeners Setup =====
@@ -524,3 +551,8 @@ window.app = {
         if (menu) menu.classList.toggle('active');
     }
 };
+
+// Add missing exports for sidebar and theme functions
+window.toggleSidebar = toggleSidebar;
+window.toggleTheme = toggleTheme;
+window.toggleLanguage = toggleLanguage;
