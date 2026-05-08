@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HR Pro System - نظام إدارة الموارد البشرية الاحترافي">
     <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HR Pro">
     <title>HR Pro System</title>
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/images/icon-192x192.png">
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/main.css">
@@ -740,5 +744,71 @@
     <script src="js/reports.js"></script>
     <script src="js/settings.js"></script>
     <script src="js/app.js"></script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered:', registration.scope);
+                        
+                        // Check for updates periodically
+                        setInterval(() => {
+                            registration.update();
+                        }, 60 * 60 * 1000); // Check every hour
+                    })
+                    .catch((error) => {
+                        console.log('SW registration failed:', error);
+                    });
+            });
+        }
+        
+        // Handle offline/online events
+        window.addEventListener('online', () => {
+            if (window.Utils) {
+                Utils.showToast('تم الاتصال بالإنترنت', 'success');
+            }
+        });
+        
+        window.addEventListener('offline', () => {
+            if (window.Utils) {
+                Utils.showToast('أنت تعمل بدون اتصال بالإنترنت', 'warning');
+            }
+        });
+        
+        // Prompt for PWA install
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button (you can add a custom UI element)
+            const installBtn = document.createElement('button');
+            installBtn.id = 'installPWA';
+            installBtn.className = 'btn btn-primary';
+            installBtn.innerHTML = '<i class="fas fa-download"></i> تثبيت التطبيق';
+            installBtn.style.cssText = 'position:fixed;bottom:20px;left:20px;z-index:9999;';
+            
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log('User response to install prompt:', outcome);
+                    deferredPrompt = null;
+                    installBtn.remove();
+                }
+            });
+            
+            document.body.appendChild(installBtn);
+        });
+        
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA installed successfully');
+            const installBtn = document.getElementById('installPWA');
+            if (installBtn) installBtn.remove();
+        });
+    </script>
 </body>
 </html>
