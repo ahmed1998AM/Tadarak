@@ -57,9 +57,13 @@ const Tasks = {
 
             Utils.showToast('تم إضافة المهمة بنجاح', 'success');
             
-            // Notify assigned user
-            if (newTask.assignedTo) {
-                Notifications.notifyTaskAssignment(newTask.title, newTask.assignedTo);
+            // Notify assigned user (only if Notifications is available)
+            if (typeof Notifications !== 'undefined' && newTask.assignedTo) {
+                try {
+                    Notifications.notifyTaskAssignment(newTask.title, newTask.assignedTo);
+                } catch (e) {
+                    console.log('Notification error:', e);
+                }
             }
 
             return true;

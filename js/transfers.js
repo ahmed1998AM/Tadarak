@@ -63,8 +63,14 @@ const Transfers = {
 
             Utils.showToast('تم إرسال طلب النقل بنجاح', 'success');
             
-            // Notify admin
-            Notifications.notifyTransferStatus('pending', `طلب نقل من ${transferData.fromDepartment} إلى ${transferData.toDepartment}`);
+            // Notify admin (only if Notifications is available)
+            if (typeof Notifications !== 'undefined') {
+                try {
+                    Notifications.notifyTransferStatus('pending', `طلب نقل من ${transferData.fromDepartment} إلى ${transferData.toDepartment}`);
+                } catch (e) {
+                    console.log('Notification error:', e);
+                }
+            }
 
             return true;
         } catch (error) {
@@ -118,10 +124,16 @@ const Transfers = {
                 'success'
             );
 
-            // Notify employee
-            Notifications.notifyTransferStatus(status, 
-                `تم ${status === 'approved' ? 'الموافقة' : 'الرفض'} لطلب نقلك`
-            );
+            // Notify employee (only if Notifications is available)
+            if (typeof Notifications !== 'undefined') {
+                try {
+                    Notifications.notifyTransferStatus(status, 
+                        `تم ${status === 'approved' ? 'الموافقة' : 'الرفض'} لطلب نقلك`
+                    );
+                } catch (e) {
+                    console.log('Notification error:', e);
+                }
+            }
 
             return true;
         } catch (error) {
@@ -267,14 +279,16 @@ const Transfers = {
 
         const reason = prompt(currentLang === 'ar' ? 'سبب النقل (اختياري):' : 'Reason for transfer (optional):') || '';
 
-        this.request({
+        const success = this.request({
             fromDepartment: currentEmp.department,
             toDepartment: toDepartment,
             reason: reason
         });
 
-        this.renderTable();
-        Dashboard.refresh();
+        if (success) {
+            this.renderTable();
+            Dashboard.refresh();
+        }
     },
 
     /**
