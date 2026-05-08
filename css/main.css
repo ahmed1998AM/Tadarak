@@ -563,6 +563,24 @@ body {
     display: none;
 }
 
+/* Sidebar Overlay for Mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
+@media screen and (max-width: 768px) {
+    .sidebar-overlay.active {
+        display: block;
+    }
+}
+
 .search-box {
     position: relative;
     width: 300px;

@@ -8,8 +8,12 @@ const App = {
      * Initialize application
      */
     init() {
+        // Initialize language first
+        initLanguage();
+        
         this.setupNavigation();
         this.setupSidebar();
+        this.setupThemeToggle();
         this.setupSearch();
         this.setupModals();
         this.checkAuth();
@@ -36,18 +40,18 @@ const App = {
      * Setup navigation
      */
     setupNavigation() {
-        const navLinks = document.querySelectorAll('.nav-link');
+        const navItems = document.querySelectorAll('.nav-item');
         
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
                 e.preventDefault();
                 
-                const targetPage = link.getAttribute('data-page');
+                const targetPage = item.getAttribute('data-page');
                 if (!targetPage) return;
 
-                // Update active nav link
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
+                // Update active nav item
+                navItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
 
                 // Hide all pages
                 document.querySelectorAll('.page').forEach(page => {
@@ -66,6 +70,7 @@ const App = {
                 // Close mobile sidebar
                 if (window.innerWidth < 768) {
                     document.querySelector('.sidebar')?.classList.remove('active');
+                    document.querySelector('.sidebar-overlay')?.classList.remove('active');
                 }
 
                 // Update URL hash
@@ -76,16 +81,16 @@ const App = {
         // Handle browser back/forward
         window.addEventListener('popstate', (e) => {
             if (e.state && e.state.page) {
-                const link = document.querySelector(`.nav-link[data-page="${e.state.page}"]`);
-                if (link) link.click();
+                const item = document.querySelector(`.nav-item[data-page="${e.state.page}"]`);
+                if (item) item.click();
             }
         });
 
         // Load page from hash on initial load
         const hash = window.location.hash.substring(1);
         if (hash) {
-            const link = document.querySelector(`.nav-link[data-page="${hash}"]`);
-            if (link) setTimeout(() => link.click(), 100);
+            const item = document.querySelector(`.nav-item[data-page="${hash}"]`);
+            if (item) setTimeout(() => item.click(), 100);
         }
     },
 
@@ -118,20 +123,55 @@ const App = {
      */
     setupSidebar() {
         const toggleBtn = document.getElementById('sidebarToggle');
+        const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.querySelector('.sidebar');
         const overlay = document.querySelector('.sidebar-overlay');
 
+        // Toggle sidebar with sidebarToggle button (desktop)
         if (toggleBtn && sidebar) {
             toggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
+                if (window.innerWidth > 768) {
+                    sidebar.classList.toggle('collapsed');
+                } else {
+                    sidebar.classList.toggle('active');
+                    overlay?.classList.toggle('active');
+                }
             });
         }
 
+        // Toggle sidebar with menuToggle button (mobile)
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                overlay?.classList.toggle('active');
+            });
+        }
+
+        // Close sidebar when clicking on overlay
         if (overlay) {
             overlay.addEventListener('click', () => {
                 sidebar?.classList.remove('active');
+                overlay.classList.remove('active');
             });
         }
+
+        // Close sidebar when clicking on nav item on mobile
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth < 768) {
+                    sidebar?.classList.remove('active');
+                    overlay?.classList.remove('active');
+                }
+            });
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                overlay?.classList.remove('active');
+            }
+        });
     },
 
     /**
@@ -285,6 +325,67 @@ const App = {
         if (dropdown) {
             dropdown.classList.toggle('show');
             Notifications.markAllAsRead();
+        }
+    },
+
+    /**
+     * Setup theme toggle
+     */
+    setupThemeToggle() {
+        const themeToggle = document.getElementById('themeToggle');
+        const languageSelect = document.getElementById('languageSelect');
+        
+        // Theme toggle button
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const body = document.body;
+                const icon = themeToggle.querySelector('i');
+                
+                // Cycle through themes: light -> dark -> blue -> light
+                const themes = ['light', 'dark', 'blue'];
+                let currentTheme = 'light';
+                
+                if (body.classList.contains('dark-theme')) {
+                    currentTheme = 'dark';
+                } else if (body.classList.contains('blue-theme')) {
+                    currentTheme = 'blue';
+                }
+                
+                // Get next theme
+                const currentIndex = themes.indexOf(currentTheme);
+                const nextTheme = themes[(currentIndex + 1) % themes.length];
+                
+                // Apply new theme
+                body.classList.remove('light-theme', 'dark-theme', 'blue-theme');
+                body.classList.add(`${nextTheme}-theme`);
+                
+                // Update icon
+                if (nextTheme === 'dark') {
+                    icon.className = 'fas fa-sun';
+                } else if (nextTheme === 'blue') {
+                    icon.className = 'fas fa-palette';
+                } else {
+                    icon.className = 'fas fa-moon';
+                }
+                
+                // Save to localStorage
+                Utils.storage.set('hr_theme', nextTheme);
+                
+                // Show toast notification
+                const themeNames = {
+                    'light': 'الفاتح',
+                    'dark': 'الداكن',
+                    'blue': 'الأزرق'
+                };
+                Utils.showToast(`تم تغيير السمة إلى ${themeNames[nextTheme]}`, 'success');
+            });
+        }
+        
+        // Language selector
+        if (languageSelect) {
+            languageSelect.addEventListener('change', (e) => {
+                setLanguage(e.target.value);
+            });
         }
     }
 };
