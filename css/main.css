@@ -1550,3 +1550,98 @@ html[dir="ltr"] .sidebar.collapsed ~ .main-content {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-muted);
 }
+
+/* ===== Developer Section Styles ===== */
+.developer-container {
+    display: flex;
+    justify-content: center;
+    padding: var(--spacing-xl);
+}
+
+.developer-card {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-2xl);
+    box-shadow: var(--shadow-md);
+    max-width: 700px;
+    width: 100%;
+    text-align: center;
+}
+
+.developer-avatar {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.developer-avatar i {
+    font-size: 3rem;
+    color: #fff;
+}
+
+.developer-card h2 {
+    color: var(--text-primary);
+    font-size: 1.8rem;
+    margin-bottom: var(--spacing-xl);
+}
+
+.developer-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    text-align: left;
+}
+
+[dir="rtl"] .detail-row {
+    text-align: right;
+}
+
+.detail-row i {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.detail-row span {
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.developer-footer {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+}
+
+.developer-footer p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.credit {
+    color: var(--primary-color);
+    font-weight: 600;
+}
