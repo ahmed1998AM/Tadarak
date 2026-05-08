@@ -9,7 +9,10 @@ const UserProfile = {
      */
     init() {
         this.setupEventListeners();
-        this.loadUserProfile();
+        // Delay loading to ensure Auth is ready
+        setTimeout(() => {
+            this.loadUserProfile();
+        }, 100);
     },
 
     /**
@@ -86,10 +89,19 @@ const UserProfile = {
      */
     loadUserProfile() {
         const currentUser = Auth.getCurrentUser();
-        if (!currentUser) return;
+        if (!currentUser) {
+            console.log('No user logged in');
+            return;
+        }
 
         // Update profile display in modal
         this.updateProfileDisplay(currentUser);
+        
+        // Display permissions if on that tab
+        const permissionsTab = document.getElementById('permissionsTab');
+        if (permissionsTab && permissionsTab.classList.contains('active')) {
+            this.displayPermissions();
+        }
     },
 
     /**
@@ -141,14 +153,17 @@ const UserProfile = {
         // Update status
         const statusBadge = document.getElementById('profileStatusBadge');
         if (statusBadge) {
-            statusBadge.className = `status-badge ${user.status}`;
+            statusBadge.className = `status-badge ${user.status || 'active'}`;
             const statusLabels = {
                 'active': 'نشط',
                 'inactive': 'غير نشط',
                 'on_leave': 'في إجازة'
             };
-            statusBadge.textContent = statusLabels[user.status] || user.status;
+            statusBadge.textContent = statusLabels[user.status || 'active'] || 'نشط';
         }
+        
+        // Display permissions immediately
+        this.displayPermissions();
     },
 
     /**
@@ -421,6 +436,12 @@ const UserProfile = {
         const permissionsList = document.getElementById('permissionsList');
         if (!permissionsList) return;
 
+        const currentUser = Auth.getCurrentUser();
+        if (!currentUser) {
+            permissionsList.innerHTML = '<div class="no-permissions">يجب تسجيل الدخول لعرض الصلاحيات</div>';
+            return;
+        }
+
         const permissions = this.getUserPermissions();
         const permissionLabels = {
             'all': 'جميع الصلاحيات',
@@ -435,11 +456,25 @@ const UserProfile = {
             'manage_custodies': 'إدارة العهد',
             'request_advance': 'طلب سلفة',
             'approve_advances': 'اعتماد السلف',
-            'view_reports': 'عرض التقارير'
+            'view_reports': 'عرض التقارير',
+            'manage_transfers': 'إدارة الانتقالات',
+            'manage_finances': 'إدارة الشؤون المالية'
         };
 
         if (permissions.includes('all')) {
-            permissionsList.innerHTML = '<div class="permission-item all"><i class="fas fa-check-circle"></i> جميع الصلاحيات</div>';
+            permissionsList.innerHTML = `
+                <div class="permission-item all">
+                    <i class="fas fa-check-circle"></i> جميع الصلاحيات
+                </div>
+                <div class="permission-info">
+                    <p>بصفتك مدير نظام، لديك صلاحية الوصول إلى جميع الأقسام والوظائف في النظام.</p>
+                </div>
+            `;
+            return;
+        }
+
+        if (permissions.length === 0) {
+            permissionsList.innerHTML = '<div class="no-permissions">لا توجد صلاحيات محددة</div>';
             return;
         }
 
