@@ -108,7 +108,11 @@ const Utils = {
      */
     showToast(message, type = 'info', duration = 3000) {
         const toast = document.getElementById('toast');
-        if (!toast) return;
+        if (!toast) {
+            // Fallback: use console and alert
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            return;
+        }
 
         toast.textContent = message;
         toast.className = `toast ${type} show`;

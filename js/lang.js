@@ -42,9 +42,13 @@ const translations = {
         // Employees
         employeeId: 'رقم الموظف',
         name: 'الاسم',
+        fullName: 'الاسم الكامل',
+        email: 'البريد الإلكتروني',
+        phone: 'الهاتف',
         department: 'القسم',
         position: 'المنصب',
         joinDate: 'تاريخ التعيين',
+        salary: 'الراتب',
         status: 'الحالة',
         actions: 'الإجراءات',
         searchEmployee: 'بحث عن موظف...',
@@ -61,6 +65,15 @@ const translations = {
         inProgress: 'قيد التنفيذ',
         review: 'مراجعة',
         completed: 'مكتملة',
+        taskTitle: 'عنوان المهمة',
+        description: 'الوصف',
+        assignedTo: 'مسندة إلى',
+        priority: 'الأولوية',
+        low: 'منخفضة',
+        medium: 'متوسطة',
+        high: 'عالية',
+        urgent: 'عاجلة',
+        dueDate: 'تاريخ الاستحقاق',
         
         // Common
         searchPlaceholder: 'بحث شامل...',
@@ -75,6 +88,36 @@ const translations = {
         confirm: 'تأكيد',
         yes: 'نعم',
         no: 'لا',
+        
+        // Transfers
+        requestTransfer: 'طلب نقل',
+        transferId: 'رقم الطلب',
+        employee: 'الموظف',
+        fromDepartment: 'من القسم',
+        toDepartment: 'إلى القسم',
+        requestDate: 'تاريخ الطلب',
+        pending: 'قيد الانتظار',
+        approved: 'موافق عليه',
+        rejected: 'مرفوض',
+        
+        // Finances
+        requestAdvance: 'طلب سلفة',
+        advanceId: 'رقم السلفة',
+        amount: 'المبلغ',
+        reason: 'السبب',
+        paymentDate: 'تاريخ الصرف',
+        totalAdvancesAmount: 'إجمالي مبالغ السلف',
+        
+        // Custodies
+        custodyId: 'رقم العهد',
+        assetName: 'اسم الأصل',
+        assignedTo: 'مسند إلى',
+        assignDate: 'تاريخ الإسناد',
+        expectedReturnDate: 'تاريخ الإرجاع المتوقع',
+        returnDate: 'تاريخ الإرجاع',
+        custodyStatus: 'حالة العهد',
+        returned: 'مرتجع',
+        notReturned: 'غير مرتجع',
         
         // Messages
         savedSuccessfully: 'تم الحفظ بنجاح',
@@ -130,9 +173,13 @@ const translations = {
         // Employees
         employeeId: 'Employee ID',
         name: 'Name',
+        fullName: 'Full Name',
+        email: 'Email',
+        phone: 'Phone',
         department: 'Department',
         position: 'Position',
         joinDate: 'Join Date',
+        salary: 'Salary',
         status: 'Status',
         actions: 'Actions',
         searchEmployee: 'Search employee...',
@@ -149,6 +196,15 @@ const translations = {
         inProgress: 'In Progress',
         review: 'Review',
         completed: 'Completed',
+        taskTitle: 'Task Title',
+        description: 'Description',
+        assignedTo: 'Assigned To',
+        priority: 'Priority',
+        low: 'Low',
+        medium: 'Medium',
+        high: 'High',
+        urgent: 'Urgent',
+        dueDate: 'Due Date',
         
         // Common
         searchPlaceholder: 'Global search...',
@@ -164,6 +220,36 @@ const translations = {
         yes: 'Yes',
         no: 'No',
         
+        // Transfers
+        requestTransfer: 'Request Transfer',
+        transferId: 'Request ID',
+        employee: 'Employee',
+        fromDepartment: 'From Department',
+        toDepartment: 'To Department',
+        requestDate: 'Request Date',
+        pending: 'Pending',
+        approved: 'Approved',
+        rejected: 'Rejected',
+        
+        // Finances
+        requestAdvance: 'Request Advance',
+        advanceId: 'Advance ID',
+        amount: 'Amount',
+        reason: 'Reason',
+        paymentDate: 'Payment Date',
+        totalAdvancesAmount: 'Total Advances Amount',
+        
+        // Custodies
+        custodyId: 'Custody ID',
+        assetName: 'Asset Name',
+        assignedTo: 'Assigned To',
+        assignDate: 'Assign Date',
+        expectedReturnDate: 'Expected Return Date',
+        returnDate: 'Return Date',
+        custodyStatus: 'Custody Status',
+        returned: 'Returned',
+        notReturned: 'Not Returned',
+        
         // Messages
         savedSuccessfully: 'Saved successfully',
         deletedSuccessfully: 'Deleted successfully',
@@ -177,6 +263,9 @@ const translations = {
         systemVersion: 'HR Pro System v2.0.0'
     }
 };
+
+// Global currentLang variable for all modules
+window.currentLang = 'ar';
 
 // Export translations
 window.translations = translations;

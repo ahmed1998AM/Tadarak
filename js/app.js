@@ -98,6 +98,10 @@ function setupEventListeners() {
             document.documentElement.dir = AppState.currentLang === 'ar' ? 'rtl' : 'ltr';
             applyTranslations();
             savePreferences();
+            
+            // Dispatch language changed event for all modules
+            window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: AppState.currentLang } }));
+            
             console.log('Language changed to:', AppState.currentLang);
         });
         console.log('Language select listener added');
@@ -212,6 +216,9 @@ function applyTranslations() {
     if (!translations || !translations[AppState.currentLang]) return;
     
     const langData = translations[AppState.currentLang];
+    
+    // Update global currentLang variable for all modules
+    window.currentLang = AppState.currentLang;
     
     // Translate all elements with data-lang attribute
     document.querySelectorAll('[data-lang]').forEach(element => {
