@@ -473,18 +473,31 @@ html[dir="ltr"] .sidebar {
 }
 
 .sidebar-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
     padding: var(--spacing-lg);
     border-top: 1px solid var(--border-color);
+    margin-top: auto;
+}
+
+.user-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    width: 100%;
 }
 
 .user-info {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
+    width: 100%;
+}
+
+html[dir="rtl"] .user-info {
+    flex-direction: row;
+}
+
+html[dir="ltr"] .user-info {
+    flex-direction: row;
 }
 
 .user-avatar {
