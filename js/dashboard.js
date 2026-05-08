@@ -206,3 +206,8 @@ function formatTimeAgo(timestamp) {
 // Export functions
 window.updateDashboard = updateDashboard;
 window.updateKPIs = updateKPIs;
+
+// Dashboard namespace for compatibility
+window.Dashboard = {
+    refresh: updateDashboard
+};
