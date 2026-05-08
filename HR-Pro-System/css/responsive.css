@@ -1,0 +1,290 @@
+/* HR Pro System - Responsive Stylesheet */
+
+/* ===== Mobile Devices (up to 768px) ===== */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        transform: translateX(100%);
+        width: var(--sidebar-width);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-right: 0;
+    }
+    
+    .menu-toggle {
+        display: block;
+    }
+    
+    .top-header {
+        padding: var(--spacing-md);
+    }
+    
+    .search-box {
+        display: none;
+    }
+    
+    .page-content {
+        padding: var(--spacing-md);
+    }
+    
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .kanban-board {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    
+    .kanban-column {
+        min-height: 300px;
+    }
+    
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .reports-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filters-bar {
+        flex-direction: column;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: flex-start;
+    }
+    
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .table-container {
+        overflow-x: scroll;
+    }
+    
+    .data-table {
+        min-width: 800px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .login-container {
+        padding: var(--spacing-lg);
+    }
+    
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .header-right {
+        gap: var(--spacing-sm);
+    }
+    
+    .notifications-dropdown .dropdown-content {
+        right: 0;
+        left: auto;
+        width: 300px;
+    }
+}
+
+/* ===== Tablets (769px to 1024px) ===== */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .kanban-board {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .reports-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .search-box {
+        width: 200px;
+    }
+}
+
+/* ===== Small Laptops (1025px to 1440px) ===== */
+@media screen and (min-width: 1025px) and (max-width: 1440px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .kanban-board {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ===== Large Screens (1441px and up) ===== */
+@media screen and (min-width: 1441px) {
+    .kpi-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .kanban-board {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .reports-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+    .sidebar,
+    .top-header,
+    .btn,
+    .action-buttons,
+    .filters-bar,
+    .theme-toggle,
+    .notifications-dropdown,
+    .language-selector {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-right: 0;
+    }
+    
+    .page-content {
+        padding: 0;
+    }
+    
+    .kpi-card,
+    .chart-card,
+    .table-container,
+    .settings-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    body {
+        background-color: white;
+        color: black;
+    }
+    
+    .data-table {
+        font-size: 10pt;
+    }
+    
+    .data-table th,
+    .data-table td {
+        padding: 4pt;
+    }
+}
+
+/* ===== Landscape Mobile ===== */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .modal-content {
+        max-height: 85vh;
+    }
+    
+    .kanban-board {
+        height: calc(100vh - 200px);
+    }
+    
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ===== Touch Devices ===== */
+@media (hover: none) and (pointer: coarse) {
+    .btn,
+    .action-btn,
+    .nav-item a {
+        min-height: 44px;
+    }
+    
+    input,
+    select,
+    textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .task-card {
+        cursor: default;
+    }
+}
+
+/* ===== Reduced Data Mode ===== */
+@media (prefers-reduced-data: reduce) {
+    * {
+        background-image: none !important;
+    }
+    
+    .kpi-icon,
+    .notification-icon,
+    .activity-icon {
+        background-color: transparent !important;
+    }
+}
+
+/* ===== High Contrast Mode (System) ===== */
+@media (prefers-contrast: high) {
+    :root {
+        --border-color: #000000;
+        --text-primary: #000000;
+    }
+    
+    .btn {
+        border: 2px solid currentColor;
+    }
+}
+
+/* ===== Dark Mode (System) ===== */
+@media (prefers-color-scheme: dark) {
+    body:not(.light-theme) {
+        --bg-primary: #1e293b;
+        --bg-secondary: #0f172a;
+        --bg-tertiary: #334155;
+        
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --text-muted: #94a3b8;
+        
+        --border-color: #475569;
+    }
+}
