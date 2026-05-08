@@ -226,21 +226,92 @@
                     
                     <!-- Charts Section -->
                     <div class="charts-grid">
-                        <div class="chart-card">
-                            <h3 data-lang="employeeDistribution">توزيع الموظفين</h3>
-                            <canvas id="departmentChart"></canvas>
+                        <div class="chart-card fixed-chart-height">
+                            <div class="card-header-flex">
+                                <h3 data-lang="employeeDistribution">توزيع الموظفين</h3>
+                                <button class="btn-icon-sm" onclick="app.navigate('employees')"><i class="fas fa-ellipsis-v"></i></button>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="departmentChart"></canvas>
+                            </div>
                         </div>
-                        <div class="chart-card">
-                            <h3 data-lang="monthlyTasks">المهام الشهرية</h3>
-                            <canvas id="tasksChart"></canvas>
+                        <div class="chart-card fixed-chart-height">
+                            <div class="card-header-flex">
+                                <h3 data-lang="monthlyTasks">المهام الشهرية</h3>
+                                <button class="btn-icon-sm" onclick="app.navigate('tasks')"><i class="fas fa-ellipsis-v"></i></button>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="tasksChart"></canvas>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Recent Activity -->
-                    <div class="activity-section">
-                        <h3 data-lang="recentActivity">النشاط الأخير</h3>
-                        <div class="activity-list" id="activityList">
-                            <!-- Activities will be inserted here -->
+                    <!-- Quick Actions & Recent Activity -->
+                    <div class="dashboard-bottom-grid">
+                        <div class="quick-actions-card">
+                            <h3 data-lang="quickActions">إجراءات سريعة</h3>
+                            <div class="quick-actions-buttons">
+                                <button class="action-btn" onclick="app.navigate('employees')">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span data-lang="addEmployee">موظف جديد</span>
+                                </button>
+                                <button class="action-btn" onclick="app.navigate('tasks')">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span data-lang="newTask">مهمة جديدة</span>
+                                </button>
+                                <button class="action-btn" onclick="app.navigate('finances')">
+                                    <i class="fas fa-hand-holding-usd"></i>
+                                    <span data-lang="newLoan">طلب سلفة</span>
+                                </button>
+                                <button class="action-btn" onclick="app.navigate('reports')">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span data-lang="reports">التقارير</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="activity-section scrollable-card">
+                            <h3 data-lang="recentActivity">النشاط الأخير</h3>
+                            <div class="activity-list" id="activityList">
+                                <!-- Activities will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Developer Page -->
+                <div id="developerPage" class="page">
+                    <div class="page-header">
+                        <h1 data-lang="developer">عن المطور</h1>
+                    </div>
+                    <div class="developer-card-wrapper">
+                        <div class="developer-card">
+                            <div class="dev-header">
+                                <div class="dev-avatar-large">
+                                    <i class="fas fa-user-code"></i>
+                                </div>
+                                <h2>أحمد مصطفى إبراهيم</h2>
+                                <p class="dev-title">Full Stack Developer</p>
+                            </div>
+                            <div class="dev-contact-info">
+                                <div class="contact-row">
+                                    <i class="fas fa-phone"></i>
+                                    <span>01225155329</span>
+                                </div>
+                                <div class="contact-row">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>a12345.mostafa@gmail.com</span>
+                                </div>
+                                <div class="contact-row">
+                                    <i class="fas fa-tag"></i>
+                                    <span>HR Pro System v2.0.0</span>
+                                </div>
+                            </div>
+                            <div class="dev-social-links">
+                                <a href="mailto:a12345.mostafa@gmail.com" class="social-link"><i class="fas fa-envelope"></i></a>
+                                <a href="tel:01225155329" class="social-link"><i class="fas fa-phone"></i></a>
+                                <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>

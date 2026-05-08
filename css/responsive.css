@@ -5,6 +5,7 @@
     /* Sidebar */
     .sidebar {
         transform: translateX(-100%);
+        transition: transform 0.3s ease;
     }
     
     [dir="rtl"] .sidebar {
@@ -13,6 +14,7 @@
     
     .sidebar.active {
         transform: translateX(0);
+        box-shadow: var(--shadow-xl);
     }
     
     .close-sidebar {
@@ -21,12 +23,14 @@
     
     .sidebar-overlay.active {
         display: block;
+        opacity: 0.5;
     }
     
     /* Main Content */
     .main-content {
         margin-left: 0 !important;
         margin-right: 0 !important;
+        width: 100%;
     }
     
     /* Header */
@@ -48,6 +52,95 @@
         font-size: 1rem;
     }
     
+    /* KPI Grid - Single Column on Mobile */
+    .kpi-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    /* Charts Grid - Single Column with Fixed Height */
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .fixed-chart-height {
+        height: 300px;
+    }
+    
+    /* Dashboard Bottom Grid - Single Column */
+    .dashboard-bottom-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Quick Actions - 2 Columns on Mobile */
+    .quick-actions-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Activity List */
+    .scrollable-card {
+        max-height: 300px;
+    }
+    
+    /* Developer Card */
+    .developer-card {
+        padding: var(--spacing-lg);
+    }
+    
+    .dev-avatar-large {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .dev-avatar-large i {
+        font-size: 2.5rem;
+    }
+    
+    .dev-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .contact-row {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    /* Tables - Scrollable */
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    /* Forms */
+    .form-group {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    /* Modal */
+    .modal-content {
+        width: 95%;
+        max-width: none;
+        margin: var(--spacing-md);
+    }
+    
+    /* Language Selector */
+    .language-selector select {
+        font-size: 0.9rem;
+        padding: var(--spacing-sm);
+    }
+    
+    /* Notifications Dropdown */
+    .notifications-dropdown {
+        position: static;
+    }
+    
+    .dropdown-content {
+        right: 0;
+        left: 0;
+        width: 100%;
+        max-width: none;
+    }
+}
+
     .user-name {
         display: none;
     }

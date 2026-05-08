@@ -257,23 +257,33 @@ function applyTranslations() {
 function navigateTo(section) {
     // Update active nav item
     elements.navItems.forEach(item => {
-        item.classList.toggle('active', item.dataset.section === section);
+        const sectionMatch = item.dataset.section === section || item.dataset.page === section;
+        item.classList.toggle('active', sectionMatch);
     });
-    
-    // Show corresponding section
+
+    // Show corresponding section - support both Page and Section suffixes
     elements.contentSections.forEach(sec => {
-        sec.classList.toggle('active', sec.id === `${section}Section`);
+        const match = sec.id === `${section}Section` || sec.id === `${section}Page`;
+        sec.classList.toggle('active', match);
     });
-    
+
+    // Close sidebar on mobile after navigation
+    if (window.innerWidth <= 768) {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.sidebar-overlay');
+        if (sidebar) sidebar.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+    }
+
     // Update page title
-    const activeNavItem = document.querySelector(`.nav-item[data-section="${section}"]`);
+    const activeNavItem = document.querySelector(`.nav-item[data-section="${section}"], .nav-item[data-page="${section}"]`);
     if (activeNavItem) {
-        const key = activeNavItem.querySelector('span')?.dataset.i18n;
+        const key = activeNavItem.querySelector('span')?.dataset.i18n || activeNavItem.querySelector('span')?.dataset.lang;
         if (key && translations && translations[AppState.currentLang]) {
             elements.pageTitle.textContent = translations[AppState.currentLang][key];
         }
     }
-    
+
     // Refresh data for specific sections
     if (section === 'dashboard' && typeof updateDashboard === 'function') {
         updateDashboard();
@@ -281,9 +291,10 @@ function navigateTo(section) {
         renderEmployees();
     } else if (section === 'tasks' && typeof renderTasks === 'function') {
         renderTasks();
+    } else if (section === 'developer') {
+        // Developer page doesn't need data refresh
     }
 }
-
 // ===== Authentication =====
 function checkAuth() {
     const user = localStorage.getItem('hr_user');
@@ -503,3 +514,13 @@ window.openEmployeeModal = openEmployeeModal;
 window.closeModal = closeModal;
 window.formatDate = formatDate;
 window.formatNumber = formatNumber;
+
+// Add app.navigate alias for compatibility
+window.app = {
+    navigate: navigateTo,
+    showSection: navigateTo,
+    toggleUserMenu: () => {
+        const menu = document.getElementById('userMenu');
+        if (menu) menu.classList.toggle('active');
+    }
+};
