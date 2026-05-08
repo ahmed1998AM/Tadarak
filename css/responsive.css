@@ -58,6 +58,7 @@
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         padding: 15px;
         background: rgba(0, 0, 0, 0.1);
+        margin-top: auto;
     }
 
     .user-info-section {
@@ -373,13 +374,28 @@
         padding: 10px;
     }
 
-    /* Developer Card */
+    /* Settings Grid on Mobile */
+    .settings-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+        padding: var(--spacing-sm);
+    }
+
+    .settings-card {
+        padding: var(--spacing-md);
+    }
+
+    .settings-card h3 {
+        font-size: 1rem;
+    }
+
+    /* Developer Card on Mobile */
     .developer-card-wrapper {
-        padding: 15px;
+        padding: var(--spacing-sm);
     }
 
     .developer-card {
-        padding: 20px;
+        padding: var(--spacing-lg);
     }
 
     .dev-avatar-large {
@@ -388,11 +404,33 @@
     }
 
     .dev-avatar-large i {
-        font-size: 40px;
+        font-size: 2rem;
     }
 
-    .dev-contact-info .contact-row {
-        font-size: 14px;
+    .dev-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .contact-row {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-sm);
+    }
+
+    [dir="rtl"] .contact-row,
+    [dir="ltr"] .contact-row {
+        text-align: center;
+    }
+
+    .contact-row span {
+        font-size: 0.9rem;
+        word-break: break-all;
+    }
+
+    .social-link {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
     }
 
     /* Theme Toggle on Mobile */
@@ -418,11 +456,6 @@
 
     html[dir="ltr"] .sidebar.active {
         transform: translateX(0);
-    }
-
-    /* Remove duplicate sidebar footer styles */
-    .sidebar-footer {
-        margin-top: auto;
     }
 
     /* Notifications Dropdown */
