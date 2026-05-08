@@ -372,9 +372,24 @@ body {
     right: 0;
     top: 0;
     height: 100vh;
-    z-index: 100;
+    z-index: 1000;
     transition: all var(--transition-normal);
     overflow-y: auto;
+}
+
+/* RTL support for sidebar */
+html[dir="rtl"] .sidebar {
+    right: 0;
+    left: auto;
+    border-left: none;
+    border-right: 1px solid var(--border-color);
+}
+
+html[dir="ltr"] .sidebar {
+    left: 0;
+    right: auto;
+    border-left: 1px solid var(--border-color);
+    border-right: none;
 }
 
 .sidebar.collapsed {
@@ -530,8 +545,18 @@ body {
     transition: margin var(--transition-normal);
 }
 
+html[dir="ltr"] .main-content {
+    margin-right: 0;
+    margin-left: var(--sidebar-width);
+}
+
 .sidebar.collapsed ~ .main-content {
     margin-right: var(--sidebar-collapsed-width);
+}
+
+html[dir="ltr"] .sidebar.collapsed ~ .main-content {
+    margin-right: 0;
+    margin-left: var(--sidebar-collapsed-width);
 }
 
 /* ===== Header ===== */
@@ -572,12 +597,15 @@ body {
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 99;
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 @media screen and (max-width: 768px) {
     .sidebar-overlay.active {
         display: block;
+        opacity: 1;
     }
 }
 
@@ -626,10 +654,16 @@ body {
     padding: var(--spacing-sm);
     border-radius: 50%;
     transition: all var(--transition-fast);
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .theme-toggle:hover {
     background-color: var(--bg-tertiary);
+    transform: scale(1.1);
 }
 
 .notifications-dropdown {
@@ -782,14 +816,27 @@ body {
 /* ===== Page Content ===== */
 .page-content {
     padding: var(--spacing-xl);
+    min-height: calc(100vh - var(--header-height));
 }
 
 .page {
     display: none;
+    animation: fadeIn 0.3s ease;
 }
 
 .page.active {
     display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .page-header {
@@ -1087,8 +1134,17 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: var(--spacing-lg);
-    height: calc(100vh - 250px);
-    overflow-x: auto;
+    height: auto;
+    min-height: 500px;
+    overflow-x: visible;
+    padding: var(--spacing-md) 0;
+}
+
+@media (min-width: 769px) {
+    .kanban-board {
+        height: calc(100vh - 280px);
+        overflow-x: auto;
+    }
 }
 
 .kanban-column {
