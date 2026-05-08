@@ -129,7 +129,19 @@ const translations = {
         developerName: 'أحمد مصطفى إبراهيم',
         developerPhone: '01225155329',
         developerEmail: 'a12345.mostafa@gmail.com',
-        systemVersion: 'HR Pro System v2.0.0'
+        systemVersion: 'HR Pro System v2.0.0',
+
+        // Profile
+        myProfile: 'ملفي الشخصي',
+        profile: 'الملف الشخصي',
+        security: 'الأمان',
+        permissions: 'الصلاحيات',
+        changePhoto: 'تغيير الصورة',
+        currentPassword: 'كلمة المرور الحالية',
+        newPassword: 'كلمة المرور الجديدة',
+        confirmPassword: 'تأكيد كلمة المرور',
+        changePassword: 'تغيير كلمة المرور',
+        yourPermissions: 'صلاحياتك'
     },
     
     en: {
@@ -260,7 +272,19 @@ const translations = {
         developerName: 'Ahmed Mostafa Ibrahim',
         developerPhone: '01225155329',
         developerEmail: 'a12345.mostafa@gmail.com',
-        systemVersion: 'HR Pro System v2.0.0'
+        systemVersion: 'HR Pro System v2.0.0',
+
+        // Profile
+        myProfile: 'My Profile',
+        profile: 'Profile',
+        security: 'Security',
+        permissions: 'Permissions',
+        changePhoto: 'Change Photo',
+        currentPassword: 'Current Password',
+        newPassword: 'New Password',
+        confirmPassword: 'Confirm Password',
+        changePassword: 'Change Password',
+        yourPermissions: 'Your Permissions'
     }
 };
 

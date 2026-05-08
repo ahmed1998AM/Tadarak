@@ -1901,3 +1901,236 @@ html[dir="ltr"] .sidebar.collapsed ~ .main-content {
     color: var(--primary-color);
     font-weight: 600;
 }
+
+/* ===== Profile Modal Styles ===== */
+.profile-modal-content {
+    max-width: 700px;
+}
+
+.profile-tabs {
+    display: flex;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: var(--spacing-md);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+    background-color: var(--bg-tertiary);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    background-color: var(--bg-secondary);
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-header-section {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: var(--border-radius-lg);
+    color: white;
+    margin-bottom: var(--spacing-lg);
+}
+
+.avatar-upload-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: var(--spacing-md);
+}
+
+.profile-avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    object-fit: cover;
+    background-color: white;
+}
+
+.avatar-upload-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: white;
+    color: var(--primary-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all var(--transition-fast);
+    font-size: 0.8rem;
+}
+
+.avatar-upload-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.avatar-upload-btn span {
+    display: none;
+}
+
+.profile-info-badges {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    margin-top: var(--spacing-md);
+}
+
+.role-badge, .status-badge {
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.role-badge.admin {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+.role-badge.manager {
+    background-color: rgba(245, 158, 11, 0.9);
+    color: white;
+}
+
+.role-badge.employee {
+    background-color: rgba(16, 185, 129, 0.9);
+    color: white;
+}
+
+.status-badge.active {
+    background-color: rgba(16, 185, 129, 0.9);
+    color: white;
+}
+
+.status-badge.inactive {
+    background-color: rgba(148, 163, 184, 0.9);
+    color: white;
+}
+
+.status-badge.on_leave {
+    background-color: rgba(245, 158, 11, 0.9);
+    color: white;
+}
+
+.profile-form {
+    padding: 0 var(--spacing-lg);
+}
+
+.security-form {
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+}
+
+.permissions-container {
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+}
+
+.permissions-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.permission-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.permission-item i {
+    color: var(--success-color);
+}
+
+.permission-item.all {
+    grid-column: 1 / -1;
+    background-color: var(--primary-color);
+    color: white;
+    justify-content: center;
+    padding: var(--spacing-md);
+    font-weight: 600;
+}
+
+.permission-item.all i {
+    color: white;
+}
+
+/* RTL support for tabs */
+html[dir="rtl"] .tab-btn {
+    flex-direction: row;
+}
+
+html[dir="ltr"] .tab-btn {
+    flex-direction: row;
+}
+
+/* Responsive profile modal */
+@media (max-width: 768px) {
+    .profile-tabs {
+        flex-direction: column;
+    }
+    
+    .tab-btn {
+        border-bottom: 1px solid var(--border-color);
+        border-left: 3px solid transparent;
+    }
+    
+    html[dir="rtl"] .tab-btn.active {
+        border-right-color: var(--primary-color);
+        border-bottom-color: var(--border-color);
+    }
+    
+    html[dir="ltr"] .tab-btn.active {
+        border-left-color: var(--primary-color);
+        border-bottom-color: var(--border-color);
+    }
+    
+    .permissions-list {
+        grid-template-columns: 1fr;
+    }
+}
+
