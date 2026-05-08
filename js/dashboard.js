@@ -1,64 +1,80 @@
 // HR Pro System - Dashboard Module
 
+let departmentChart = null;
+let tasksChart = null;
+
 function updateDashboard() {
-    // Get data from storage
+    console.log('Updating dashboard...');
+    
+    // Update KPIs
+    updateKPIs();
+    
+    // Update charts
+    updateDepartmentChart();
+    updateTasksChart();
+    
+    // Update activity list
+    updateActivityList();
+    
+    console.log('Dashboard updated');
+}
+
+function updateKPIs() {
     const employees = JSON.parse(localStorage.getItem('hr_employees') || '[]');
     const tasks = JSON.parse(localStorage.getItem('hr_tasks') || '[]');
     const transfers = JSON.parse(localStorage.getItem('hr_transfers') || '[]');
     const finances = JSON.parse(localStorage.getItem('hr_finances') || '[]');
-
-    // Update stats
+    
+    // Total Employees
     document.getElementById('totalEmployees').textContent = employees.length;
     
-    const activeTasksCount = tasks.filter(t => t.status !== 'done').length;
+    // Active Tasks
+    const activeTasksCount = tasks.filter(t => t.status !== 'completed').length;
     document.getElementById('activeTasks').textContent = activeTasksCount;
     
+    // Pending Transfers
     const pendingTransfersCount = transfers.filter(t => t.status === 'pending').length;
     document.getElementById('pendingTransfers').textContent = pendingTransfersCount;
     
-    const totalFinancesAmount = finances.reduce((sum, f) => sum + (parseFloat(f.amount) || 0), 0);
-    document.getElementById('totalFinances').textContent = totalFinancesAmount.toLocaleString();
-
-    // Update charts
-    updateEmployeesChart(employees);
-    updateTasksChart(tasks);
+    // Total Advances
+    const totalAdvances = finances
+        .filter(f => f.type === 'advance')
+        .reduce((sum, f) => sum + (parseFloat(f.amount) || 0), 0);
+    document.getElementById('totalAdvances').textContent = '$' + totalAdvances.toLocaleString();
 }
 
-function updateEmployeesChart(employees) {
-    const ctx = document.getElementById('employeesChart');
+function updateDepartmentChart() {
+    const ctx = document.getElementById('departmentChart');
     if (!ctx) return;
-
-    // Count employees by department
+    
+    const employees = JSON.parse(localStorage.getItem('hr_employees') || '[]');
+    
+    // Group by department
     const deptCount = {};
     employees.forEach(emp => {
         const dept = emp.department || 'Other';
         deptCount[dept] = (deptCount[dept] || 0) + 1;
     });
-
+    
     const labels = Object.keys(deptCount);
     const data = Object.values(deptCount);
-
-    // Destroy existing chart if exists
-    if (window.employeesChartInstance) {
-        window.employeesChartInstance.destroy();
+    
+    // Destroy existing chart
+    if (departmentChart) {
+        departmentChart.destroy();
     }
-
-    // Create new chart
-    const config = {
+    
+    // Create new chart with fixed height
+    departmentChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: labels,
+            labels: labels.length ? labels : ['No Data'],
             datasets: [{
-                data: data,
+                data: data.length ? data : [1],
                 backgroundColor: [
-                    '#4361ee',
-                    '#2ecc71',
-                    '#f39c12',
-                    '#e74c3c',
-                    '#9c27b0',
-                    '#00bcd4'
-                ],
-                borderWidth: 0
+                    '#4361ee', '#3f37c9', '#4895ef', '#4cc9f0',
+                    '#f72585', '#7209b7', '#3a0ca3', '#4361ee'
+                ]
             }]
         },
         options: {
@@ -66,57 +82,58 @@ function updateEmployeesChart(employees) {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'bottom',
-                    labels: {
-                        padding: 15,
-                        font: { size: 12 }
-                    }
+                    position: 'bottom'
                 }
             }
         }
-    };
-
-    window.employeesChartInstance = new Chart(ctx, config);
+    });
 }
 
-function updateTasksChart(tasks) {
+function updateTasksChart() {
     const ctx = document.getElementById('tasksChart');
     if (!ctx) return;
-
-    // Count tasks by status
-    const todoCount = tasks.filter(t => t.status === 'todo').length;
-    const inProgressCount = tasks.filter(t => t.status === 'inProgress').length;
-    const doneCount = tasks.filter(t => t.status === 'done').length;
-
-    // Destroy existing chart if exists
-    if (window.tasksChartInstance) {
-        window.tasksChartInstance.destroy();
+    
+    const tasks = JSON.parse(localStorage.getItem('hr_tasks') || '[]');
+    
+    // Group by status
+    const statusCount = {
+        todo: 0,
+        in_progress: 0,
+        review: 0,
+        completed: 0
+    };
+    
+    tasks.forEach(task => {
+        const status = task.status || 'todo';
+        if (statusCount.hasOwnProperty(status)) {
+            statusCount[status]++;
+        }
+    });
+    
+    // Destroy existing chart
+    if (tasksChart) {
+        tasksChart.destroy();
     }
-
-    // Create new chart
-    const config = {
+    
+    // Create new chart with fixed height
+    tasksChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['للقيام به', 'قيد التنفيذ', 'منجز'],
+            labels: ['للتنفيذ', 'قيد التنفيذ', 'مراجعة', 'مكتملة'],
             datasets: [{
                 label: 'المهام',
-                data: [todoCount, inProgressCount, doneCount],
+                data: [statusCount.todo, statusCount.in_progress, statusCount.review, statusCount.completed],
                 backgroundColor: [
+                    '#e74c3c',
                     '#f39c12',
                     '#3498db',
                     '#2ecc71'
-                ],
-                borderRadius: 8
+                ]
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
             scales: {
                 y: {
                     beginAtZero: true,
@@ -124,12 +141,68 @@ function updateTasksChart(tasks) {
                         stepSize: 1
                     }
                 }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
             }
         }
-    };
-
-    window.tasksChartInstance = new Chart(ctx, config);
+    });
 }
 
-// Make functions available globally
+function updateActivityList() {
+    const activityList = document.getElementById('activityList');
+    if (!activityList) return;
+    
+    const activities = JSON.parse(localStorage.getItem('hr_activities') || '[]');
+    
+    if (activities.length === 0) {
+        activityList.innerHTML = '<p class="no-data">لا يوجد نشاط حديث</p>';
+        return;
+    }
+    
+    // Show last 10 activities
+    const recentActivities = activities.slice(-10).reverse();
+    
+    activityList.innerHTML = recentActivities.map(activity => `
+        <div class="activity-item">
+            <div class="activity-icon ${activity.type || 'info'}">
+                <i class="fas fa-${getActivityIcon(activity.type)}"></i>
+            </div>
+            <div class="activity-content">
+                <p>${activity.message || 'نشاط جديد'}</p>
+                <span class="activity-time">${formatTimeAgo(activity.timestamp)}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getActivityIcon(type) {
+    const icons = {
+        'employee': 'user',
+        'task': 'check-circle',
+        'transfer': 'exchange-alt',
+        'finance': 'money-bill-wave',
+        'custody': 'laptop',
+        'info': 'info-circle'
+    };
+    return icons[type] || 'circle';
+}
+
+function formatTimeAgo(timestamp) {
+    const now = Date.now();
+    const diff = now - timestamp;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+    
+    if (minutes < 1) return 'الآن';
+    if (minutes < 60) return `منذ ${minutes} دقيقة`;
+    if (hours < 24) return `منذ ${hours} ساعة`;
+    return `منذ ${days} يوم`;
+}
+
+// Export functions
 window.updateDashboard = updateDashboard;
+window.updateKPIs = updateKPIs;

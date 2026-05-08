@@ -1,4 +1,4 @@
-// HR Pro System - Main Application Script
+// HR Pro System - Main Application Script (Fixed Version)
 
 // ===== Global State =====
 const AppState = {
@@ -9,56 +9,42 @@ const AppState = {
 };
 
 // ===== DOM Elements =====
-const elements = {
-    loadingScreen: null,
-    loginPage: null,
-    appContainer: null,
-    sidebar: null,
-    sidebarOverlay: null,
-    toggleSidebar: null,
-    closeSidebar: null,
-    themeToggle: null,
-    langToggle: null,
-    logoutBtn: null,
-    navItems: [],
-    contentSections: [],
-    pageTitle: null,
-    userNameDisplay: null,
-    modalOverlay: null,
-    employeeModal: null
-};
+let elements = {};
 
 // Initialize DOM Elements after DOMContentLoaded
 function initElements() {
-    elements.loadingScreen = document.getElementById('loadingScreen');
-    elements.loginPage = document.getElementById('loginPage');
-    elements.appContainer = document.getElementById('appContainer');
-    elements.sidebar = document.getElementById('sidebar');
-    elements.sidebarOverlay = document.getElementById('sidebarOverlay');
-    elements.toggleSidebar = document.getElementById('sidebarToggle');
-    elements.closeSidebar = document.getElementById('closeSidebar');
-    elements.themeToggle = document.getElementById('themeToggle');
-    elements.langToggle = document.getElementById('languageSelect') || document.getElementById('langToggle');
-    elements.logoutBtn = document.getElementById('logoutBtn');
-    elements.navItems = document.querySelectorAll('.nav-item');
-    elements.contentSections = document.querySelectorAll('.page');
-    elements.pageTitle = document.getElementById('pageTitle');
-    elements.userNameDisplay = document.getElementById('userNameDisplay');
-    elements.modalOverlay = document.getElementById('modalOverlay');
-    elements.employeeModal = document.getElementById('employeeModal');
+    elements = {
+        loadingScreen: document.getElementById('loadingScreen'),
+        loginModal: document.getElementById('loginModal'),
+        appContainer: document.getElementById('appContainer'),
+        sidebar: document.getElementById('sidebar'),
+        sidebarOverlay: document.querySelector('.sidebar-overlay'),
+        menuToggle: document.getElementById('menuToggle'),
+        sidebarToggle: document.getElementById('sidebarToggle'),
+        themeToggle: document.getElementById('themeToggle'),
+        languageSelect: document.getElementById('languageSelect'),
+        logoutBtn: document.getElementById('logoutBtn'),
+        navItems: document.querySelectorAll('.nav-item'),
+        pages: document.querySelectorAll('.page'),
+        pageTitle: document.querySelector('.page-header h1'),
+        userName: document.getElementById('userName'),
+        userRole: document.getElementById('userRole')
+    };
 }
 
 // ===== Initialize App =====
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('HR Pro System - Initializing...');
+    
     // Initialize DOM Elements first
     initElements();
     
-    // Hide loading screen
-    setTimeout(() => {
-        if (elements.loadingScreen) {
+    // Hide loading screen if exists
+    if (elements.loadingScreen) {
+        setTimeout(() => {
             elements.loadingScreen.classList.add('hidden');
-        }
-    }, 500);
+        }, 500);
+    }
 
     // Check authentication
     checkAuth();
@@ -72,46 +58,64 @@ document.addEventListener('DOMContentLoaded', () => {
     // Apply initial theme and language
     applyTheme();
     applyTranslations();
+    
+    console.log('HR Pro System - Initialized successfully');
 });
 
 // ===== Event Listeners Setup =====
 function setupEventListeners() {
-    // Sidebar toggle
-    if (elements.toggleSidebar) {
-        elements.toggleSidebar.addEventListener('click', toggleSidebar);
+    console.log('Setting up event listeners...');
+    
+    // Menu toggle (mobile) - using menuToggle ID from header
+    if (elements.menuToggle) {
+        elements.menuToggle.addEventListener('click', toggleSidebar);
+        console.log('Menu toggle listener added');
     }
 
-    // Close sidebar
-    if (elements.closeSidebar) {
-        elements.closeSidebar.addEventListener('click', closeSidebar);
+    // Sidebar toggle button (if exists in sidebar header)
+    if (elements.sidebarToggle) {
+        elements.sidebarToggle.addEventListener('click', toggleSidebar);
+        console.log('Sidebar toggle listener added');
     }
 
     // Sidebar overlay click
     if (elements.sidebarOverlay) {
         elements.sidebarOverlay.addEventListener('click', closeSidebar);
+        console.log('Sidebar overlay listener added');
     }
 
     // Theme toggle
     if (elements.themeToggle) {
         elements.themeToggle.addEventListener('click', toggleTheme);
+        console.log('Theme toggle listener added');
     }
 
-    // Language toggle
-    if (elements.langToggle) {
-        elements.langToggle.addEventListener('click', toggleLanguage);
+    // Language select - using change event for dropdown
+    if (elements.languageSelect) {
+        elements.languageSelect.addEventListener('change', function() {
+            AppState.currentLang = this.value;
+            document.documentElement.lang = AppState.currentLang;
+            document.documentElement.dir = AppState.currentLang === 'ar' ? 'rtl' : 'ltr';
+            applyTranslations();
+            savePreferences();
+            console.log('Language changed to:', AppState.currentLang);
+        });
+        console.log('Language select listener added');
     }
 
     // Logout
     if (elements.logoutBtn) {
         elements.logoutBtn.addEventListener('click', logout);
+        console.log('Logout listener added');
     }
 
-    // Navigation items
+    // Navigation items - using data-page attribute
     elements.navItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
-            const section = item.dataset.section;
-            navigateTo(section);
+            const page = item.dataset.page;
+            console.log('Navigating to:', page);
+            navigateTo(page);
             
             // Close sidebar on mobile after navigation
             if (window.innerWidth <= 768) {
@@ -119,43 +123,19 @@ function setupEventListeners() {
             }
         });
     });
-
-    // Modal close buttons
-    document.querySelectorAll('.close-modal').forEach(btn => {
-        btn.addEventListener('click', () => {
-            closeModal();
-        });
-    });
-
-    // Modal overlay click
-    if (elements.modalOverlay) {
-        elements.modalOverlay.addEventListener('click', closeModal);
-    });
+    console.log('Navigation listeners added:', elements.navItems.length);
 
     // Login form
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
-    }
-
-    // Employee form
-    const employeeForm = document.getElementById('employeeForm');
-    if (employeeForm) {
-        employeeForm.addEventListener('submit', handleEmployeeSubmit);
-    }
-
-    // Add employee button
-    const addEmployeeBtn = document.getElementById('addEmployeeBtn');
-    if (addEmployeeBtn) {
-        addEmployeeBtn.addEventListener('click', () => openEmployeeModal());
+        console.log('Login form listener added');
     }
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
-        // ESC to close sidebar/modal
         if (e.key === 'Escape') {
             closeSidebar();
-            closeModal();
         }
     });
 
@@ -165,38 +145,43 @@ function setupEventListeners() {
             closeSidebar();
         }
     });
+    
+    console.log('Event listeners setup complete');
 }
 
 // ===== Sidebar Functions =====
 function toggleSidebar() {
     AppState.sidebarOpen = !AppState.sidebarOpen;
-    
+
     if (elements.sidebar) {
         elements.sidebar.classList.toggle('active', AppState.sidebarOpen);
     }
-    
+
     if (elements.sidebarOverlay) {
         elements.sidebarOverlay.classList.toggle('active', AppState.sidebarOpen);
     }
-    
-    // Prevent body scroll when sidebar is open on mobile
+
     if (window.innerWidth <= 768) {
         document.body.style.overflow = AppState.sidebarOpen ? 'hidden' : '';
     }
+    
+    console.log('Sidebar toggled:', AppState.sidebarOpen);
 }
 
 function closeSidebar() {
     AppState.sidebarOpen = false;
-    
+
     if (elements.sidebar) {
         elements.sidebar.classList.remove('active');
     }
-    
+
     if (elements.sidebarOverlay) {
         elements.sidebarOverlay.classList.remove('active');
     }
-    
+
     document.body.style.overflow = '';
+    
+    console.log('Sidebar closed');
 }
 
 // ===== Theme Functions =====
@@ -211,52 +196,26 @@ function toggleTheme() {
 }
 
 function applyTheme() {
-    // Remove all theme classes
     document.body.classList.remove('light-theme', 'dark-theme', 'blue-theme', 'green-theme', 'purple-theme', 'orange-theme', 'red-theme');
-    
-    // Add current theme
     document.body.classList.add(AppState.currentTheme);
     
-    // Update icon
     if (elements.themeToggle) {
         const icon = elements.themeToggle.querySelector('i');
         if (icon) {
-            if (AppState.currentTheme === 'light-theme') {
-                icon.className = 'fas fa-moon';
-            } else {
-                icon.className = 'fas fa-sun';
-            }
+            icon.className = AppState.currentTheme === 'light-theme' ? 'fas fa-moon' : 'fas fa-sun';
         }
     }
 }
 
 // ===== Language Functions =====
-function toggleLanguage() {
-    AppState.currentLang = AppState.currentLang === 'ar' ? 'en' : 'ar';
-    
-    // Update HTML dir and lang
-    document.documentElement.lang = AppState.currentLang;
-    document.documentElement.dir = AppState.currentLang === 'ar' ? 'rtl' : 'ltr';
-    
-    // Update language button text
-    if (elements.langToggle) {
-        elements.langToggle.textContent = AppState.currentLang === 'ar' ? 'EN' : 'عربي';
-    }
-    
-    // Apply translations
-    applyTranslations();
-    
-    // Save preference
-    savePreferences();
-}
-
 function applyTranslations() {
     if (!translations || !translations[AppState.currentLang]) return;
     
     const langData = translations[AppState.currentLang];
     
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.dataset.i18n;
+    // Translate all elements with data-lang attribute
+    document.querySelectorAll('[data-lang]').forEach(element => {
+        const key = element.dataset.lang;
         if (langData[key]) {
             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                 element.placeholder = langData[key];
@@ -266,62 +225,62 @@ function applyTranslations() {
         }
     });
     
-    // Update page title based on current section
-    const activeSection = document.querySelector('.content-section.active');
-    if (activeSection) {
-        const sectionId = activeSection.id.replace('Section', '');
-        const navItem = document.querySelector(`.nav-item[data-section="${sectionId.toLowerCase()}"]`);
-        if (navItem) {
-            const key = navItem.querySelector('span')?.dataset.i18n;
-            if (key && langData[key]) {
-                elements.pageTitle.textContent = langData[key];
-            }
+    // Translate placeholders with data-lang-placeholder
+    document.querySelectorAll('[data-lang-placeholder]').forEach(element => {
+        const key = element.dataset.langPlaceholder;
+        if (langData[key]) {
+            element.placeholder = langData[key];
         }
-    }
+    });
 }
 
 // ===== Navigation =====
-function navigateTo(section) {
+function navigateTo(page) {
+    console.log('Navigating to page:', page);
+    
+    if (!page) {
+        page = 'dashboard';
+    }
+    
     // Update active nav item
     elements.navItems.forEach(item => {
-        const sectionMatch = item.dataset.section === section || item.dataset.page === section;
-        item.classList.toggle('active', sectionMatch);
+        item.classList.toggle('active', item.dataset.page === page);
     });
 
-    // Show corresponding section - support both Page and Section suffixes
-    elements.contentSections.forEach(sec => {
-        const match = sec.id === `${section}Section` || sec.id === `${section}Page`;
-        sec.classList.toggle('active', match);
+    // Show corresponding page
+    elements.pages.forEach(p => {
+        const isActive = p.id === page + 'Page';
+        p.classList.toggle('active', isActive);
+        console.log('Page', p.id, 'active:', isActive);
     });
 
-    // Close sidebar on mobile after navigation
+    // Close sidebar on mobile
     if (window.innerWidth <= 768) {
-        const sidebar = document.querySelector('.sidebar');
-        const overlay = document.querySelector('.sidebar-overlay');
-        if (sidebar) sidebar.classList.remove('active');
-        if (overlay) overlay.classList.remove('active');
+        closeSidebar();
     }
 
     // Update page title
-    const activeNavItem = document.querySelector(`.nav-item[data-section="${section}"], .nav-item[data-page="${section}"]`);
-    if (activeNavItem) {
-        const key = activeNavItem.querySelector('span')?.dataset.i18n || activeNavItem.querySelector('span')?.dataset.lang;
-        if (key && translations && translations[AppState.currentLang]) {
-            elements.pageTitle.textContent = translations[AppState.currentLang][key];
+    const activeNavItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+    if (activeNavItem && elements.pageTitle) {
+        const span = activeNavItem.querySelector('span');
+        if (span && span.dataset.lang) {
+            const key = span.dataset.lang;
+            if (translations && translations[AppState.currentLang] && translations[AppState.currentLang][key]) {
+                elements.pageTitle.textContent = translations[AppState.currentLang][key];
+            }
         }
     }
 
-    // Refresh data for specific sections
-    if (section === 'dashboard' && typeof updateDashboard === 'function') {
-        updateDashboard();
-    } else if (section === 'employees' && typeof renderEmployees === 'function') {
-        renderEmployees();
-    } else if (section === 'tasks' && typeof renderTasks === 'function') {
-        renderTasks();
-    } else if (section === 'developer') {
-        // Developer page doesn't need data refresh
+    // Refresh data for specific pages
+    if (page === 'dashboard' && typeof updateDashboard === 'function') {
+        setTimeout(updateDashboard, 100);
+    } else if (page === 'employees' && typeof renderEmployees === 'function') {
+        setTimeout(renderEmployees, 100);
+    } else if (page === 'tasks' && typeof renderTasks === 'function') {
+        setTimeout(renderTasks, 100);
     }
 }
+
 // ===== Authentication =====
 function checkAuth() {
     const user = localStorage.getItem('hr_user');
@@ -339,7 +298,6 @@ function handleLogin(e) {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     
-    // Simple authentication (replace with real auth in production)
     if (username === 'admin' && password === 'admin123') {
         const user = {
             username: username,
@@ -350,10 +308,14 @@ function handleLogin(e) {
         localStorage.setItem('hr_user', JSON.stringify(user));
         AppState.currentUser = user;
         
-        showNotification('تم تسجيل الدخول بنجاح', 'success');
+        if (typeof showNotification === 'function') {
+            showNotification('تم تسجيل الدخول بنجاح', 'success');
+        }
         showApp();
     } else {
-        showNotification('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+        if (typeof showNotification === 'function') {
+            showNotification('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+        }
     }
 }
 
@@ -361,23 +323,25 @@ function logout() {
     localStorage.removeItem('hr_user');
     AppState.currentUser = null;
     showLogin();
-    showNotification('تم تسجيل الخروج', 'info');
+    if (typeof showNotification === 'function') {
+        showNotification('تم تسجيل الخروج', 'info');
+    }
 }
 
 function showApp() {
-    if (elements.loginPage) {
-        elements.loginPage.style.display = 'none';
+    if (elements.loginModal) {
+        elements.loginModal.classList.add('hidden');
+        elements.loginModal.style.display = 'none';
     }
     if (elements.appContainer) {
+        elements.appContainer.classList.remove('hidden');
         elements.appContainer.style.display = 'flex';
     }
     
-    // Update user name display
-    if (AppState.currentUser && elements.userNameDisplay) {
-        elements.userNameDisplay.textContent = AppState.currentUser.name || AppState.currentUser.username;
+    if (AppState.currentUser && elements.userName) {
+        elements.userName.textContent = AppState.currentUser.name || AppState.currentUser.username;
     }
     
-    // Initialize dashboard
     if (typeof updateDashboard === 'function') {
         updateDashboard();
     }
@@ -385,73 +349,12 @@ function showApp() {
 
 function showLogin() {
     if (elements.appContainer) {
+        elements.appContainer.classList.add('hidden');
         elements.appContainer.style.display = 'none';
     }
-    if (elements.loginPage) {
-        elements.loginPage.style.display = 'flex';
-    }
-}
-
-// ===== Modal Functions =====
-function openEmployeeModal(employee = null) {
-    const modal = elements.employeeModal;
-    const overlay = elements.modalOverlay;
-    
-    if (!modal || !overlay) return;
-    
-    // Reset form
-    document.getElementById('employeeForm').reset();
-    document.getElementById('employeeId').value = '';
-    
-    // Set title
-    const title = document.getElementById('employeeModalTitle');
-    if (title) {
-        title.textContent = employee ? 'تعديل موظف' : 'إضافة موظف';
-    }
-    
-    // Fill data if editing
-    if (employee) {
-        document.getElementById('employeeId').value = employee.id || '';
-        document.getElementById('empName').value = employee.name || '';
-        document.getElementById('empJob').value = employee.job || '';
-        document.getElementById('empDept').value = employee.department || '';
-    }
-    
-    overlay.classList.add('active');
-    modal.classList.add('active');
-}
-
-function closeModal() {
-    if (elements.modalOverlay) {
-        elements.modalOverlay.classList.remove('active');
-    }
-    if (elements.employeeModal) {
-        elements.employeeModal.classList.remove('active');
-    }
-}
-
-function handleEmployeeSubmit(e) {
-    e.preventDefault();
-    
-    const id = document.getElementById('employeeId').value;
-    const employee = {
-        id: id || Date.now().toString(),
-        name: document.getElementById('empName').value,
-        job: document.getElementById('empJob').value,
-        department: document.getElementById('empDept').value
-    };
-    
-    // Save employee (implement your storage logic)
-    if (typeof saveEmployee === 'function') {
-        saveEmployee(employee);
-    }
-    
-    closeModal();
-    showNotification('تم حفظ الموظف بنجاح', 'success');
-    
-    // Refresh employees list
-    if (typeof renderEmployees === 'function') {
-        renderEmployees();
+    if (elements.loginModal) {
+        elements.loginModal.classList.remove('hidden');
+        elements.loginModal.style.display = 'flex';
     }
 }
 
@@ -464,17 +367,14 @@ function loadPreferences() {
         AppState.currentLang = savedLang;
         document.documentElement.lang = AppState.currentLang;
         document.documentElement.dir = AppState.currentLang === 'ar' ? 'rtl' : 'ltr';
-        if (elements.langToggle) {
-            elements.langToggle.textContent = AppState.currentLang === 'ar' ? 'EN' : 'عربي';
+        if (elements.languageSelect) {
+            elements.languageSelect.value = AppState.currentLang;
         }
     }
     
     if (savedTheme) {
         AppState.currentTheme = savedTheme;
     }
-    
-    applyTheme();
-    applyTranslations();
 }
 
 function savePreferences() {
@@ -484,7 +384,6 @@ function savePreferences() {
 
 // ===== Notifications =====
 function showNotification(message, type = 'info') {
-    // Create notification element
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
@@ -503,7 +402,6 @@ function showNotification(message, type = 'info') {
     
     document.body.appendChild(notification);
     
-    // Remove after 3 seconds
     setTimeout(() => {
         notification.style.animation = 'slideOut 0.3s ease';
         setTimeout(() => notification.remove(), 300);
@@ -537,22 +435,15 @@ function formatNumber(num) {
 window.AppState = AppState;
 window.navigateTo = navigateTo;
 window.showNotification = showNotification;
-window.openEmployeeModal = openEmployeeModal;
-window.closeModal = closeModal;
 window.formatDate = formatDate;
 window.formatNumber = formatNumber;
 
 // Add app.navigate alias for compatibility
 window.app = {
     navigate: navigateTo,
-    showSection: navigateTo,
-    toggleUserMenu: () => {
-        const menu = document.getElementById('userMenu');
-        if (menu) menu.classList.toggle('active');
-    }
+    showSection: navigateTo
 };
 
 // Add missing exports for sidebar and theme functions
 window.toggleSidebar = toggleSidebar;
 window.toggleTheme = toggleTheme;
-window.toggleLanguage = toggleLanguage;
