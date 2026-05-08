@@ -2,30 +2,29 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="HR Pro System - نظام إدارة الموارد البشرية الاحترافي">
-    <meta name="theme-color" content="#2563eb">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="HR Pro">
+    <meta name="theme-color" content="#4361ee">
     <title>HR Pro System</title>
-    
+
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="assets/images/icon-192x192.svg">
     <link rel="icon" type="image/svg+xml" href="assets/images/icon-placeholder.svg">
-    
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/themes.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/animations.css">
-    
+
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="light-theme">
     <!-- Login Modal -->
@@ -105,6 +104,9 @@
                     </li>
                     <li class="nav-item" data-page="settings">
                         <a href="#"><i class="fas fa-cog"></i> <span data-lang="settings">الإعدادات</span></a>
+                    </li>
+                    <li class="nav-item" data-page="developer">
+                        <a href="#"><i class="fas fa-info-circle"></i> <span data-lang="developer">عن المطور</span></a>
                     </li>
                 </ul>
             </nav>
@@ -609,6 +611,46 @@
                     </div>
                 </div>
             </div>
+
+                <!-- Developer Page -->
+                <div id="developerPage" class="page">
+                    <div class="page-header">
+                        <h1 data-lang="developer">عن المطور</h1>
+                    </div>
+                    
+                    <div class="developer-container">
+                        <div class="developer-card">
+                            <div class="developer-avatar">
+                                <i class="fas fa-user-code"></i>
+                            </div>
+                            <h2 data-lang="developerInfo">معلومات المطور</h2>
+                            
+                            <div class="developer-details">
+                                <div class="detail-row">
+                                    <i class="fas fa-user"></i>
+                                    <span><strong data-lang="name">الاسم:</strong> أحمد مصطفى إبراهيم</span>
+                                </div>
+                                <div class="detail-row">
+                                    <i class="fas fa-phone"></i>
+                                    <span><strong data-lang="phone">الهاتف:</strong> 01225155329</span>
+                                </div>
+                                <div class="detail-row">
+                                    <i class="fas fa-envelope"></i>
+                                    <span><strong data-lang="email">البريد الإلكتروني:</strong> a12345.mostafa@gmail.com</span>
+                                </div>
+                                <div class="detail-row">
+                                    <i class="fas fa-code"></i>
+                                    <span><strong data-lang="version">إصدار النظام:</strong> 2.0.0 Pro</span>
+                                </div>
+                            </div>
+                            
+                            <div class="developer-footer">
+                                <p>&copy; 2024 HR Pro System. All Rights Reserved.</p>
+                                <p class="credit">Developed by Ahmed Mostafa Ibrahim</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </main>
     </div>
 

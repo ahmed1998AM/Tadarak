@@ -1,401 +1,505 @@
-/**
- * HR Pro System - Main Application Module
- * Handles navigation, sidebar, and global functionality
- */
+// HR Pro System - Main Application Script
 
-const App = {
-    /**
-     * Initialize application
-     */
-    init() {
-        // Initialize language first
-        initLanguage();
-        
-        this.setupNavigation();
-        this.setupSidebar();
-        this.setupThemeToggle();
-        this.setupSearch();
-        this.setupModals();
-        this.checkAuth();
-        
-        console.log('HR Pro System initialized');
-    },
-
-    /**
-     * Check authentication status
-     */
-    checkAuth() {
-        const session = Utils.session.get('hr_session');
-        if (!session || !session.userId) {
-            // Show login modal
-            document.getElementById('loginModal')?.classList.remove('hidden');
-            return;
-        }
-
-        // User is logged in
-        Auth.showApp();
-    },
-
-    /**
-     * Setup navigation
-     */
-    setupNavigation() {
-        const navItems = document.querySelectorAll('.nav-item');
-        
-        navItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                const targetPage = item.getAttribute('data-page');
-                if (!targetPage) return;
-
-                // Update active nav item
-                navItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-
-                // Hide all pages
-                document.querySelectorAll('.page').forEach(page => {
-                    page.classList.remove('active');
-                });
-
-                // Show target page
-                const targetElement = document.getElementById(`${targetPage}Page`);
-                if (targetElement) {
-                    targetElement.classList.add('active');
-                    
-                    // Initialize page-specific modules
-                    this.initializePage(targetPage);
-                }
-
-                // Close mobile sidebar
-                if (window.innerWidth < 768) {
-                    document.querySelector('.sidebar')?.classList.remove('active');
-                    document.querySelector('.sidebar-overlay')?.classList.remove('active');
-                }
-
-                // Update URL hash
-                history.pushState({ page: targetPage }, '', `#${targetPage}`);
-            });
-        });
-
-        // Handle browser back/forward
-        window.addEventListener('popstate', (e) => {
-            if (e.state && e.state.page) {
-                const item = document.querySelector(`.nav-item[data-page="${e.state.page}"]`);
-                if (item) item.click();
-            }
-        });
-
-        // Load page from hash on initial load
-        const hash = window.location.hash.substring(1);
-        if (hash) {
-            const item = document.querySelector(`.nav-item[data-page="${hash}"]`);
-            if (item) setTimeout(() => item.click(), 100);
-        }
-    },
-
-    /**
-     * Initialize page-specific modules
-     * @param {string} pageName - Page name
-     */
-    initializePage(pageName) {
-        const pageModules = {
-            'dashboard': () => Dashboard.refresh(),
-            'employees': () => Employees.renderTable(),
-            'tasks': () => Tasks.renderKanban(),
-            'transfers': () => Transfers.renderTable(),
-            'custodies': () => Custodies.renderTable(),
-            'finances': () => {
-                Finances.renderTable();
-                Finances.updateSummary();
-            },
-            'reports': () => {},
-            'settings': () => Settings.loadSettings()
-        };
-
-        if (pageModules[pageName]) {
-            setTimeout(() => pageModules[pageName](), 50);
-        }
-    },
-
-    /**
-     * Setup sidebar
-     */
-    setupSidebar() {
-        const toggleBtn = document.getElementById('sidebarToggle');
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.querySelector('.sidebar');
-        const overlay = document.querySelector('.sidebar-overlay');
-
-        // Toggle sidebar with sidebarToggle button (desktop)
-        if (toggleBtn && sidebar) {
-            toggleBtn.addEventListener('click', () => {
-                if (window.innerWidth > 768) {
-                    sidebar.classList.toggle('collapsed');
-                } else {
-                    sidebar.classList.toggle('active');
-                    overlay?.classList.toggle('active');
-                }
-            });
-        }
-
-        // Toggle sidebar with menuToggle button (mobile)
-        if (menuToggle && sidebar) {
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-                overlay?.classList.toggle('active');
-            });
-        }
-
-        // Close sidebar when clicking on overlay
-        if (overlay) {
-            overlay.addEventListener('click', () => {
-                sidebar?.classList.remove('active');
-                overlay.classList.remove('active');
-            });
-        }
-
-        // Close sidebar when clicking on nav item on mobile
-        const navItems = document.querySelectorAll('.nav-item');
-        navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                if (window.innerWidth < 768) {
-                    sidebar?.classList.remove('active');
-                    overlay?.classList.remove('active');
-                }
-            });
-        });
-        
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                overlay?.classList.remove('active');
-            }
-        });
-    },
-
-    /**
-     * Setup search functionality
-     */
-    setupSearch() {
-        const searchInput = document.getElementById('globalSearch');
-        const searchResults = document.getElementById('searchResults');
-
-        if (!searchInput) return;
-
-        const performSearch = Utils.debounce((query) => {
-            if (!query || query.length < 2) {
-                if (searchResults) searchResults.classList.remove('show');
-                return;
-            }
-
-            const results = [];
-            const searchTerm = query.toLowerCase();
-
-            // Search employees
-            const employees = Utils.storage.get('hr_employees', []);
-            employees.forEach(emp => {
-                if (emp.fullName.toLowerCase().includes(searchTerm) ||
-                    emp.email.toLowerCase().includes(searchTerm) ||
-                    emp.position.toLowerCase().includes(searchTerm)) {
-                    results.push({
-                        type: 'employee',
-                        title: emp.fullName,
-                        subtitle: emp.position,
-                        icon: 'fas fa-user',
-                        action: () => {
-                            document.querySelector('.nav-link[data-page="employees"]')?.click();
-                            setTimeout(() => Employees.edit(emp.id), 200);
-                        }
-                    });
-                }
-            });
-
-            // Search tasks
-            const tasks = Utils.storage.get('hr_tasks', []);
-            tasks.forEach(task => {
-                if (task.title.toLowerCase().includes(searchTerm) ||
-                    task.description.toLowerCase().includes(searchTerm)) {
-                    results.push({
-                        type: 'task',
-                        title: task.title,
-                        subtitle: Utils.getStatusLabel(task.status),
-                        icon: 'fas fa-tasks',
-                        action: () => {
-                            document.querySelector('.nav-link[data-page="tasks"]')?.click();
-                        }
-                    });
-                }
-            });
-
-            // Display results
-            if (searchResults && results.length > 0) {
-                searchResults.innerHTML = results.map(result => `
-                    <div class="search-result-item" onclick="App.handleSearchResult(this)">
-                        <i class="${result.icon}"></i>
-                        <div class="search-result-content">
-                            <h4>${result.title}</h4>
-                            <p>${result.subtitle}</p>
-                        </div>
-                    </div>
-                `).join('');
-                searchResults.classList.add('show');
-            } else if (searchResults) {
-                searchResults.classList.remove('show');
-            }
-        }, 300);
-
-        searchInput.addEventListener('input', (e) => {
-            performSearch(e.target.value);
-        });
-
-        // Close search results when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-container')) {
-                searchResults?.classList.remove('show');
-            }
-        });
-    },
-
-    /**
-     * Handle search result click
-     * @param {HTMLElement} element - Clicked element
-     */
-    handleSearchResult(element) {
-        // This will be called from the inline onclick handler
-        const index = Array.from(element.parentNode.children).indexOf(element);
-        const results = document.getElementById('searchResults');
-        if (results) {
-            const items = results.querySelectorAll('.search-result-item');
-            if (items[index]) {
-                // Store action to be executed after page navigation
-                sessionStorage.setItem('pendingAction', index.toString());
-            }
-        }
-    },
-
-    /**
-     * Setup modals
-     */
-    setupModals() {
-        // Login form
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                
-                await Auth.login(username, password);
-            });
-        }
-
-        // Close modal buttons
-        document.querySelectorAll('.modal-close').forEach(btn => {
-            btn.addEventListener('click', function() {
-                this.closest('.modal')?.classList.remove('active');
-            });
-        });
-
-        // Close modal on outside click
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove('active');
-                }
-            });
-        });
-    },
-
-    /**
-     * Logout
-     */
-    logout() {
-        if (confirm(currentLang === 'ar' ? 'هل تريد تسجيل الخروج؟' : 'Do you want to logout?')) {
-            Auth.logout();
-        }
-    },
-
-    /**
-     * Toggle notifications dropdown
-     */
-    toggleNotifications() {
-        const dropdown = document.getElementById('notificationsDropdown');
-        if (dropdown) {
-            dropdown.classList.toggle('show');
-            Notifications.markAllAsRead();
-        }
-    },
-
-    /**
-     * Setup theme toggle
-     */
-    setupThemeToggle() {
-        const themeToggle = document.getElementById('themeToggle');
-        const languageSelect = document.getElementById('languageSelect');
-        
-        // Theme toggle button
-        if (themeToggle) {
-            themeToggle.addEventListener('click', () => {
-                const body = document.body;
-                const icon = themeToggle.querySelector('i');
-                
-                // Cycle through themes: light -> dark -> blue -> light
-                const themes = ['light', 'dark', 'blue'];
-                let currentTheme = 'light';
-                
-                if (body.classList.contains('dark-theme')) {
-                    currentTheme = 'dark';
-                } else if (body.classList.contains('blue-theme')) {
-                    currentTheme = 'blue';
-                }
-                
-                // Get next theme
-                const currentIndex = themes.indexOf(currentTheme);
-                const nextTheme = themes[(currentIndex + 1) % themes.length];
-                
-                // Apply new theme
-                body.classList.remove('light-theme', 'dark-theme', 'blue-theme');
-                body.classList.add(`${nextTheme}-theme`);
-                
-                // Update icon
-                if (nextTheme === 'dark') {
-                    icon.className = 'fas fa-sun';
-                } else if (nextTheme === 'blue') {
-                    icon.className = 'fas fa-palette';
-                } else {
-                    icon.className = 'fas fa-moon';
-                }
-                
-                // Save to localStorage
-                Utils.storage.set('hr_theme', nextTheme);
-                
-                // Show toast notification
-                const themeNames = {
-                    'light': 'الفاتح',
-                    'dark': 'الداكن',
-                    'blue': 'الأزرق'
-                };
-                Utils.showToast(`تم تغيير السمة إلى ${themeNames[nextTheme]}`, 'success');
-            });
-        }
-        
-        // Language selector
-        if (languageSelect) {
-            languageSelect.addEventListener('change', (e) => {
-                setLanguage(e.target.value);
-            });
-        }
-    }
+// ===== Global State =====
+const AppState = {
+    currentLang: 'ar',
+    currentTheme: 'light-theme',
+    sidebarOpen: false,
+    currentUser: null
 };
 
-// Make App functions available globally
-window.App = App;
-window.logout = () => App.logout();
-window.toggleNotifications = () => App.toggleNotifications();
+// ===== DOM Elements =====
+const elements = {
+    loadingScreen: document.getElementById('loadingScreen'),
+    loginPage: document.getElementById('loginPage'),
+    appContainer: document.getElementById('appContainer'),
+    sidebar: document.getElementById('sidebar'),
+    sidebarOverlay: document.getElementById('sidebarOverlay'),
+    toggleSidebar: document.getElementById('toggleSidebar'),
+    closeSidebar: document.getElementById('closeSidebar'),
+    themeToggle: document.getElementById('themeToggle'),
+    langToggle: document.getElementById('langToggle'),
+    logoutBtn: document.getElementById('logoutBtn'),
+    navItems: document.querySelectorAll('.nav-item'),
+    contentSections: document.querySelectorAll('.content-section'),
+    pageTitle: document.getElementById('pageTitle'),
+    userNameDisplay: document.getElementById('userNameDisplay'),
+    modalOverlay: document.getElementById('modalOverlay'),
+    employeeModal: document.getElementById('employeeModal')
+};
 
-// Initialize app when DOM is ready
+// ===== Initialize App =====
 document.addEventListener('DOMContentLoaded', () => {
-    App.init();
+    // Hide loading screen
+    setTimeout(() => {
+        if (elements.loadingScreen) {
+            elements.loadingScreen.classList.add('hidden');
+        }
+    }, 1000);
+
+    // Check authentication
+    checkAuth();
+
+    // Setup event listeners
+    setupEventListeners();
+
+    // Load saved preferences
+    loadPreferences();
 });
+
+// ===== Event Listeners Setup =====
+function setupEventListeners() {
+    // Sidebar toggle
+    if (elements.toggleSidebar) {
+        elements.toggleSidebar.addEventListener('click', toggleSidebar);
+    }
+
+    // Close sidebar
+    if (elements.closeSidebar) {
+        elements.closeSidebar.addEventListener('click', closeSidebar);
+    }
+
+    // Sidebar overlay click
+    if (elements.sidebarOverlay) {
+        elements.sidebarOverlay.addEventListener('click', closeSidebar);
+    }
+
+    // Theme toggle
+    if (elements.themeToggle) {
+        elements.themeToggle.addEventListener('click', toggleTheme);
+    }
+
+    // Language toggle
+    if (elements.langToggle) {
+        elements.langToggle.addEventListener('click', toggleLanguage);
+    }
+
+    // Logout
+    if (elements.logoutBtn) {
+        elements.logoutBtn.addEventListener('click', logout);
+    }
+
+    // Navigation items
+    elements.navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const section = item.dataset.section;
+            navigateTo(section);
+            
+            // Close sidebar on mobile after navigation
+            if (window.innerWidth <= 768) {
+                closeSidebar();
+            }
+        });
+    });
+
+    // Modal close buttons
+    document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+            closeModal();
+        });
+    });
+
+    // Modal overlay click
+    if (elements.modalOverlay) {
+        elements.modalOverlay.addEventListener('click', closeModal);
+    });
+
+    // Login form
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+
+    // Employee form
+    const employeeForm = document.getElementById('employeeForm');
+    if (employeeForm) {
+        employeeForm.addEventListener('submit', handleEmployeeSubmit);
+    }
+
+    // Add employee button
+    const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+    if (addEmployeeBtn) {
+        addEmployeeBtn.addEventListener('click', () => openEmployeeModal());
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        // ESC to close sidebar/modal
+        if (e.key === 'Escape') {
+            closeSidebar();
+            closeModal();
+        }
+    });
+
+    // Window resize handler
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            closeSidebar();
+        }
+    });
+}
+
+// ===== Sidebar Functions =====
+function toggleSidebar() {
+    AppState.sidebarOpen = !AppState.sidebarOpen;
+    
+    if (elements.sidebar) {
+        elements.sidebar.classList.toggle('active', AppState.sidebarOpen);
+    }
+    
+    if (elements.sidebarOverlay) {
+        elements.sidebarOverlay.classList.toggle('active', AppState.sidebarOpen);
+    }
+    
+    // Prevent body scroll when sidebar is open on mobile
+    if (window.innerWidth <= 768) {
+        document.body.style.overflow = AppState.sidebarOpen ? 'hidden' : '';
+    }
+}
+
+function closeSidebar() {
+    AppState.sidebarOpen = false;
+    
+    if (elements.sidebar) {
+        elements.sidebar.classList.remove('active');
+    }
+    
+    if (elements.sidebarOverlay) {
+        elements.sidebarOverlay.classList.remove('active');
+    }
+    
+    document.body.style.overflow = '';
+}
+
+// ===== Theme Functions =====
+function toggleTheme() {
+    const themes = ['light-theme', 'dark-theme', 'blue-theme', 'green-theme', 'purple-theme', 'orange-theme', 'red-theme'];
+    const currentIndex = themes.indexOf(AppState.currentTheme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    AppState.currentTheme = themes[nextIndex];
+    
+    applyTheme();
+    savePreferences();
+}
+
+function applyTheme() {
+    // Remove all theme classes
+    document.body.classList.remove('light-theme', 'dark-theme', 'blue-theme', 'green-theme', 'purple-theme', 'orange-theme', 'red-theme');
+    
+    // Add current theme
+    document.body.classList.add(AppState.currentTheme);
+    
+    // Update icon
+    if (elements.themeToggle) {
+        const icon = elements.themeToggle.querySelector('i');
+        if (icon) {
+            if (AppState.currentTheme === 'light-theme') {
+                icon.className = 'fas fa-moon';
+            } else {
+                icon.className = 'fas fa-sun';
+            }
+        }
+    }
+}
+
+// ===== Language Functions =====
+function toggleLanguage() {
+    AppState.currentLang = AppState.currentLang === 'ar' ? 'en' : 'ar';
+    
+    // Update HTML dir and lang
+    document.documentElement.lang = AppState.currentLang;
+    document.documentElement.dir = AppState.currentLang === 'ar' ? 'rtl' : 'ltr';
+    
+    // Update language button text
+    if (elements.langToggle) {
+        elements.langToggle.textContent = AppState.currentLang === 'ar' ? 'EN' : 'عربي';
+    }
+    
+    // Apply translations
+    applyTranslations();
+    
+    // Save preference
+    savePreferences();
+}
+
+function applyTranslations() {
+    if (!translations || !translations[AppState.currentLang]) return;
+    
+    const langData = translations[AppState.currentLang];
+    
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.dataset.i18n;
+        if (langData[key]) {
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.placeholder = langData[key];
+            } else {
+                element.textContent = langData[key];
+            }
+        }
+    });
+    
+    // Update page title based on current section
+    const activeSection = document.querySelector('.content-section.active');
+    if (activeSection) {
+        const sectionId = activeSection.id.replace('Section', '');
+        const navItem = document.querySelector(`.nav-item[data-section="${sectionId.toLowerCase()}"]`);
+        if (navItem) {
+            const key = navItem.querySelector('span')?.dataset.i18n;
+            if (key && langData[key]) {
+                elements.pageTitle.textContent = langData[key];
+            }
+        }
+    }
+}
+
+// ===== Navigation =====
+function navigateTo(section) {
+    // Update active nav item
+    elements.navItems.forEach(item => {
+        item.classList.toggle('active', item.dataset.section === section);
+    });
+    
+    // Show corresponding section
+    elements.contentSections.forEach(sec => {
+        sec.classList.toggle('active', sec.id === `${section}Section`);
+    });
+    
+    // Update page title
+    const activeNavItem = document.querySelector(`.nav-item[data-section="${section}"]`);
+    if (activeNavItem) {
+        const key = activeNavItem.querySelector('span')?.dataset.i18n;
+        if (key && translations && translations[AppState.currentLang]) {
+            elements.pageTitle.textContent = translations[AppState.currentLang][key];
+        }
+    }
+    
+    // Refresh data for specific sections
+    if (section === 'dashboard' && typeof updateDashboard === 'function') {
+        updateDashboard();
+    } else if (section === 'employees' && typeof renderEmployees === 'function') {
+        renderEmployees();
+    } else if (section === 'tasks' && typeof renderTasks === 'function') {
+        renderTasks();
+    }
+}
+
+// ===== Authentication =====
+function checkAuth() {
+    const user = localStorage.getItem('hr_user');
+    if (user) {
+        AppState.currentUser = JSON.parse(user);
+        showApp();
+    } else {
+        showLogin();
+    }
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    // Simple authentication (replace with real auth in production)
+    if (username === 'admin' && password === 'admin123') {
+        const user = {
+            username: username,
+            name: 'Administrator',
+            role: 'admin'
+        };
+        
+        localStorage.setItem('hr_user', JSON.stringify(user));
+        AppState.currentUser = user;
+        
+        showNotification('تم تسجيل الدخول بنجاح', 'success');
+        showApp();
+    } else {
+        showNotification('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+    }
+}
+
+function logout() {
+    localStorage.removeItem('hr_user');
+    AppState.currentUser = null;
+    showLogin();
+    showNotification('تم تسجيل الخروج', 'info');
+}
+
+function showApp() {
+    if (elements.loginPage) {
+        elements.loginPage.style.display = 'none';
+    }
+    if (elements.appContainer) {
+        elements.appContainer.style.display = 'flex';
+    }
+    
+    // Update user name display
+    if (AppState.currentUser && elements.userNameDisplay) {
+        elements.userNameDisplay.textContent = AppState.currentUser.name || AppState.currentUser.username;
+    }
+    
+    // Initialize dashboard
+    if (typeof updateDashboard === 'function') {
+        updateDashboard();
+    }
+}
+
+function showLogin() {
+    if (elements.appContainer) {
+        elements.appContainer.style.display = 'none';
+    }
+    if (elements.loginPage) {
+        elements.loginPage.style.display = 'flex';
+    }
+}
+
+// ===== Modal Functions =====
+function openEmployeeModal(employee = null) {
+    const modal = elements.employeeModal;
+    const overlay = elements.modalOverlay;
+    
+    if (!modal || !overlay) return;
+    
+    // Reset form
+    document.getElementById('employeeForm').reset();
+    document.getElementById('employeeId').value = '';
+    
+    // Set title
+    const title = document.getElementById('employeeModalTitle');
+    if (title) {
+        title.textContent = employee ? 'تعديل موظف' : 'إضافة موظف';
+    }
+    
+    // Fill data if editing
+    if (employee) {
+        document.getElementById('employeeId').value = employee.id || '';
+        document.getElementById('empName').value = employee.name || '';
+        document.getElementById('empJob').value = employee.job || '';
+        document.getElementById('empDept').value = employee.department || '';
+    }
+    
+    overlay.classList.add('active');
+    modal.classList.add('active');
+}
+
+function closeModal() {
+    if (elements.modalOverlay) {
+        elements.modalOverlay.classList.remove('active');
+    }
+    if (elements.employeeModal) {
+        elements.employeeModal.classList.remove('active');
+    }
+}
+
+function handleEmployeeSubmit(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('employeeId').value;
+    const employee = {
+        id: id || Date.now().toString(),
+        name: document.getElementById('empName').value,
+        job: document.getElementById('empJob').value,
+        department: document.getElementById('empDept').value
+    };
+    
+    // Save employee (implement your storage logic)
+    if (typeof saveEmployee === 'function') {
+        saveEmployee(employee);
+    }
+    
+    closeModal();
+    showNotification('تم حفظ الموظف بنجاح', 'success');
+    
+    // Refresh employees list
+    if (typeof renderEmployees === 'function') {
+        renderEmployees();
+    }
+}
+
+// ===== Preferences =====
+function loadPreferences() {
+    const savedLang = localStorage.getItem('hr_lang');
+    const savedTheme = localStorage.getItem('hr_theme');
+    
+    if (savedLang) {
+        AppState.currentLang = savedLang;
+        document.documentElement.lang = AppState.currentLang;
+        document.documentElement.dir = AppState.currentLang === 'ar' ? 'rtl' : 'ltr';
+        if (elements.langToggle) {
+            elements.langToggle.textContent = AppState.currentLang === 'ar' ? 'EN' : 'عربي';
+        }
+    }
+    
+    if (savedTheme) {
+        AppState.currentTheme = savedTheme;
+    }
+    
+    applyTheme();
+    applyTranslations();
+}
+
+function savePreferences() {
+    localStorage.setItem('hr_lang', AppState.currentLang);
+    localStorage.setItem('hr_theme', AppState.currentTheme);
+}
+
+// ===== Notifications =====
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        background: ${type === 'success' ? '#2ecc71' : type === 'error' ? '#e74c3c' : '#3498db'};
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Add notification animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+
+// ===== Utility Functions =====
+function formatDate(date) {
+    return new Date(date).toLocaleDateString(AppState.currentLang === 'ar' ? 'ar-EG' : 'en-US');
+}
+
+function formatNumber(num) {
+    return num.toLocaleString(AppState.currentLang === 'ar' ? 'ar-EG' : 'en-US');
+}
+
+// Export functions for use in other modules
+window.AppState = AppState;
+window.navigateTo = navigateTo;
+window.showNotification = showNotification;
+window.openEmployeeModal = openEmployeeModal;
+window.closeModal = closeModal;
+window.formatDate = formatDate;
+window.formatNumber = formatNumber;
