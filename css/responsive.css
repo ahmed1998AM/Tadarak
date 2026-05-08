@@ -5,14 +5,27 @@
     .sidebar {
         transform: translateX(100%);
         width: var(--sidebar-width);
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
     }
     
     .sidebar.active {
         transform: translateX(0);
     }
     
+    .sidebar-overlay {
+        display: block;
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    .sidebar-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    
     .main-content {
         margin-right: 0;
+        width: 100%;
     }
     
     .menu-toggle {
