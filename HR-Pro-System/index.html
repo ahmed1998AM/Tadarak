@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HR Pro System - نظام إدارة الموارد البشرية الاحترافي">
+    <meta name="theme-color" content="#2563eb">
+    <title>HR Pro System</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="light-theme">
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal active">
+        <div class="modal-content login-container">
+            <div class="login-header">
+                <i class="fas fa-users-cog fa-3x"></i>
+                <h1 data-lang="systemTitle">HR Pro System</h1>
+                <p data-lang="loginSubtitle">نظام إدارة الموارد البشرية الاحترافي</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username" data-lang="username">اسم المستخدم</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" required autocomplete="username">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" data-lang="password">كلمة المرور</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" required autocomplete="current-password">
+                    </div>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span data-lang="rememberMe">تذكرني</span>
+                    </label>
+                    <a href="#" data-lang="forgotPassword">نسيت كلمة المرور؟</a>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" data-lang="login">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+                <div class="language-switcher">
+                    <button type="button" class="btn-lang" data-lang="en">English</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="appContainer" class="app-container hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-users-cog fa-2x"></i>
+                <span class="logo-text" data-lang="systemTitle">HR Pro</span>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active" data-page="dashboard">
+                        <a href="#"><i class="fas fa-chart-line"></i> <span data-lang="dashboard">لوحة التحكم</span></a>
+                    </li>
+                    <li class="nav-item" data-page="employees">
+                        <a href="#"><i class="fas fa-users"></i> <span data-lang="employees">الموظفين</span></a>
+                    </li>
+                    <li class="nav-item" data-page="tasks">
+                        <a href="#"><i class="fas fa-tasks"></i> <span data-lang="tasks">المهام</span></a>
+                    </li>
+                    <li class="nav-item" data-page="transfers">
+                        <a href="#"><i class="fas fa-exchange-alt"></i> <span data-lang="transfers">الانتقالات</span></a>
+                    </li>
+                    <li class="nav-item" data-page="custodies">
+                        <a href="#"><i class="fas fa-laptop"></i> <span data-lang="custodies">العهد والأصول</span></a>
+                    </li>
+                    <li class="nav-item" data-page="finances">
+                        <a href="#"><i class="fas fa-money-bill-wave"></i> <span data-lang="finances">السلف والتحصيلات</span></a>
+                    </li>
+                    <li class="nav-item" data-page="reports">
+                        <a href="#"><i class="fas fa-file-alt"></i> <span data-lang="reports">التقارير</span></a>
+                    </li>
+                    <li class="nav-item" data-page="settings">
+                        <a href="#"><i class="fas fa-cog"></i> <span data-lang="settings">الإعدادات</span></a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <img src="assets/images/default-avatar.png" alt="User" class="user-avatar" id="userAvatar">
+                    <div class="user-details">
+                        <span class="user-name" id="userName">محمد أحمد</span>
+                        <span class="user-role" id="userRole">مدير النظام</span>
+                    </div>
+                </div>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span data-lang="logout">خروج</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="globalSearch" placeholder="بحث شامل..." data-lang-placeholder="searchPlaceholder">
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <button class="theme-toggle" id="themeToggle" title="تبديل السمة">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <div class="notifications-dropdown">
+                        <button class="notification-btn" id="notificationBtn">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge" id="notificationBadge">0</span>
+                        </button>
+                        <div class="dropdown-content" id="notificationsDropdown">
+                            <div class="dropdown-header">
+                                <h3 data-lang="notifications">الإشعارات</h3>
+                                <button class="mark-all-read" data-lang="markAllRead">تحديد الكل كمقروء</button>
+                            </div>
+                            <div class="notifications-list" id="notificationsList">
+                                <!-- Notifications will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="language-selector">
+                        <select id="languageSelect">
+                            <option value="ar">العربية</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content Container -->
+            <div class="page-content" id="pageContent">
+                <!-- Dashboard Page -->
+                <div id="dashboardPage" class="page active">
+                    <div class="page-header">
+                        <h1 data-lang="dashboard">لوحة التحكم</h1>
+                        <div class="breadcrumb">
+                            <span data-lang="home">الرئيسية</span> / <span data-lang="dashboard">لوحة التحكم</span>
+                        </div>
+                    </div>
+                    
+                    <!-- KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-icon blue">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <h3 id="totalEmployees">0</h3>
+                                <p data-lang="totalEmployees">إجمالي الموظفين</p>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon green">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <h3 id="activeTasks">0</h3>
+                                <p data-lang="activeTasks">المهام النشطة</p>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon orange">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <h3 id="pendingTransfers">0</h3>
+                                <p data-lang="pendingTransfers">طلبات الانتظار</p>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon red">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <h3 id="totalAdvances">$0</h3>
+                                <p data-lang="totalAdvances">إجمالي السلف</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts Section -->
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3 data-lang="employeeDistribution">توزيع الموظفين</h3>
+                            <canvas id="departmentChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3 data-lang="monthlyTasks">المهام الشهرية</h3>
+                            <canvas id="tasksChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="activity-section">
+                        <h3 data-lang="recentActivity">النشاط الأخير</h3>
+                        <div class="activity-list" id="activityList">
+                            <!-- Activities will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employees Page -->
+                <div id="employeesPage" class="page">
+                    <div class="page-header">
+                        <h1 data-lang="employees">الموظفين</h1>
+                        <button class="btn btn-primary" id="addEmployeeBtn">
+                            <i class="fas fa-plus"></i> <span data-lang="addEmployee">إضافة موظف</span>
+                        </button>
+                    </div>
+                    
+                    <div class="filters-bar">
+                        <div class="filter-group">
+                            <input type="text" id="employeeSearch" placeholder="بحث عن موظف..." data-lang-placeholder="searchEmployee">
+                        </div>
+                        <div class="filter-group">
+                            <select id="departmentFilter">
+                                <option value="" data-lang="allDepartments">جميع الأقسام</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <select id="statusFilter">
+                                <option value="" data-lang="allStatuses">جميع الحالات</option>
+                                <option value="active" data-lang="active">نشط</option>
+                                <option value="inactive" data-lang="inactive">غير نشط</option>
+                                <option value="on_leave" data-lang="onLeave">في إجازة</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-secondary" id="exportEmployeesBtn">
+                            <i class="fas fa-file-export"></i> <span data-lang="export">تصدير</span>
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table" id="employeesTable">
+                            <thead>
+                                <tr>
+                                    <th data-lang="employeeId">رقم الموظف</th>
+                                    <th data-lang="name">الاسم</th>
+                                    <th data-lang="department">القسم</th>
+                                    <th data-lang="position">المنصب</th>
+                                    <th data-lang="joinDate">تاريخ التعيين</th>
+                                    <th data-lang="status">الحالة</th>
+                                    <th data-lang="actions">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeesTableBody">
+                                <!-- Employee rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tasks Page (Kanban) -->
+                <div id="tasksPage" class="page">
+                    <div class="page-header">
+                        <h1 data-lang="tasks">المهام</h1>
+                        <button class="btn btn-primary" id="addTaskBtn">
+                            <i class="fas fa-plus"></i> <span data-lang="addTask">إضافة مهمة</span>
+                        </button>
+                    </div>
+                    
+                    <div class="kanban-board" id="kanbanBoard">
+                        <div class="kanban-column" data-status="todo">
+                            <div class="column-header">
+                                <h3 data-lang="toDo">للتنفيذ</h3>
+                                <span class="task-count">0</span>
+                            </div>
+                            <div class="column-body" id="todoColumn"></div>
+                        </div>
+                        <div class="kanban-column" data-status="in_progress">
+                            <div class="column-header">
+                                <h3 data-lang="inProgress">قيد التنفيذ</h3>
+                                <span class="task-count">0</span>
+                            </div>
+                            <div class="column-body" id="inProgressColumn"></div>
+                        </div>
+                        <div class="kanban-column" data-status="review">
+                            <div class="column-header">
+                                <h3 data-lang="review">مراجعة</h3>
+                                <span class="task-count">0</span>
+                            </div>
+                            <div class="column-body" id="reviewColumn"></div>
+                        </div>
+                        <div class="kanban-column" data-status="done">
+                            <div class="column-header">
+                                <h3 data-lang="done">مكتمل</h3>
+                                <span class="task-count">0</span>
+                            </div>
+                            <div class="column-body" id="doneColumn"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transfers Page -->
+                <div id="transfersPage" class="page">
+                    <div class="page-header">
+                        <h1 data-lang="transfers">الانتقالات</h1>
+                        <button class="btn btn-primary" id="requestTransferBtn">
+                            <i class="fas fa-plus"></i> <span data-lang="requestTransfer">طلب نقل</span>
+                        </button>
+                    </div>
+                    
+                    <div class="filters-bar">
+                        <div class="filter-group">
+                            <select id="transferStatusFilter">
+                                <option value="" data-lang="allStatuses">جميع الحالات</option>
+                                <option value="pending" data-lang="pending">قيد الانتظار</option>
+                                <option value="approved" data-lang="approved">موافق عليه</option>
+                                <option value="rejected" data-lang="rejected">مرفوض</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table" id="transfersTable">
+                            <thead>
+                                <tr>
+                                    <th data-lang="transferId">رقم الطلب</th>
+                                    <th data-lang="employee">الموظف</th>
+                                    <th data-lang="fromDepartment">من القسم</th>
+                                    <th data-lang="toDepartment">إلى القسم</th>
+                                    <th data-lang="requestDate">تاريخ الطلب</th>
+                                    <th data-lang="status">الحالة</th>
+                                    <th data-lang="actions">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transfersTableBody">
+                                <!-- Transfer rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Custodies Page -->
+                <div id="custodiesPage" class="page">
+                    <div class="page-header">
+                        <h1 data-lang="custodies">العهد والأصول</h1>
+                        <button class="btn btn-primary" id="addCustodyBtn">
+                            <i class="fas fa-plus"></i> <span data-lang="addCustody">إضافة عهد</span>
+                        </button>
+                    </div>
+                    
+                    <div class="alerts-section" id="custodyAlerts">
+                        <!-- Alerts will be inserted here -->
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table" id="custodiesTable">
+                            <thead>
+                                <tr>
+                                    <th data-lang="assetId">رقم الأصل</th>
+                                    <th data-lang="assetName">اسم الأصل</th>
+                                    <th data-lang="assetType">النوع</th>
+                                    <th data-lang="assignedTo">مسند إلى</th>
+                                    <th data-lang="assignmentDate">تاريخ الإسناد</th>
+                                    <th data-lang="returnDate">تاريخ الإرجاع المتوقع</th>
+                                    <th data-lang="status">الحالة</th>
+                                    <th data-lang="actions">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="custodiesTableBody">
+                                <!-- Custody rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Finances Page -->
+                <div id="financesPage" class="page">
+                    <div class="page-header">
+                        <h1 data-lang="finances">السلف والتحصيلات</h1>
+                        <button class="btn btn-primary" id="requestAdvanceBtn">
+                            <i class="fas fa-plus"></i> <span data-lang="requestAdvance">طلب سلفة</span>
+                        </button>
+                    </div>
+                    
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <h4 data-lang="totalAdvances">إجمالي السلف</h4>
+                            <p id="financeTotalAdvances">$0</p>
+                        </div>
+                        <div class="summary-card">
+                            <h4 data-lang="pendingRequests">الطلبات المعلقة</h4>
+                            <p id="financePendingRequests">0</p>
+                        </div>
+                        <div class="summary-card">
+                            <h4 data-lang="thisMonth">هذا الشهر</h4>
+                            <p id="financeThisMonth">$0</p>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table" id="financesTable">
+                            <thead>
+                                <tr>
+                                    <th data-lang="advanceId">رقم السلفة</th>
+                                    <th data-lang="employee">الموظف</th>
+                                    <th data-lang="amount">المبلغ</th>
+                                    <th data-lang="installments">الأقساط</th>
+                                    <th data-lang="remaining">المتبقي</th>
+                                    <th data-lang="requestDate">تاريخ الطلب</th>
+                                    <th data-lang="status">الحالة</th>
+                                    <th data-lang="actions">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="financesTableBody">
+                                <!-- Finance rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Reports Page -->
+                <div id="reportsPage" class="page">
+                    <div class="page-header">
+                        <h1 data-lang="reports">التقارير</h1>
+                    </div>
+                    
+                    <div class="reports-grid">
+                        <div class="report-card" data-report="employees">
+                            <i class="fas fa-users fa-3x"></i>
+                            <h3 data-lang="employeeReport">تقرير الموظفين</h3>
+                            <p data-lang="employeeReportDesc">تقرير شامل عن جميع الموظفين</p>
+                            <div class="report-actions">
+                                <button class="btn btn-sm btn-primary" onclick="generateReport('employees', 'pdf')">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </button>
+                                <button class="btn btn-sm btn-secondary" onclick="generateReport('employees', 'excel')">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="report-card" data-report="tasks">
+                            <i class="fas fa-tasks fa-3x"></i>
+                            <h3 data-lang="tasksReport">تقرير المهام</h3>
+                            <p data-lang="tasksReportDesc">أداء المهام والإنجازات</p>
+                            <div class="report-actions">
+                                <button class="btn btn-sm btn-primary" onclick="generateReport('tasks', 'pdf')">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </button>
+                                <button class="btn btn-sm btn-secondary" onclick="generateReport('tasks', 'excel')">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="report-card" data-report="finances">
+                            <i class="fas fa-money-bill-wave fa-3x"></i>
+                            <h3 data-lang="financesReport">تقرير المالية</h3>
+                            <p data-lang="financesReportDesc">السلف والتحصيلات المالية</p>
+                            <div class="report-actions">
+                                <button class="btn btn-sm btn-primary" onclick="generateReport('finances', 'pdf')">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </button>
+                                <button class="btn btn-sm btn-secondary" onclick="generateReport('finances', 'excel')">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="report-card" data-report="attendance">
+                            <i class="fas fa-calendar-check fa-3x"></i>
+                            <h3 data-lang="attendanceReport">تقرير الحضور</h3>
+                            <p data-lang="attendanceReportDesc">سجل الحضور والغياب</p>
+                            <div class="report-actions">
+                                <button class="btn btn-sm btn-primary" onclick="generateReport('attendance', 'pdf')">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </button>
+                                <button class="btn btn-sm btn-secondary" onclick="generateReport('attendance', 'excel')">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="settingsPage" class="page">
+                    <div class="page-header">
+                        <h1 data-lang="settings">الإعدادات</h1>
+                    </div>
+                    
+                    <div class="settings-grid">
+                        <div class="settings-card">
+                            <h3 data-lang="generalSettings">الإعدادات العامة</h3>
+                            <form id="generalSettingsForm">
+                                <div class="form-group">
+                                    <label data-lang="companyName">اسم الشركة</label>
+                                    <input type="text" id="companyName" value="شركة التقنية المتقدمة">
+                                </div>
+                                <div class="form-group">
+                                    <label data-lang="workingHours">ساعات العمل</label>
+                                    <input type="text" id="workingHours" value="9:00 AM - 5:00 PM">
+                                </div>
+                                <div class="form-group">
+                                    <label data-lang="weekendDays">أيام العطلة</label>
+                                    <select id="weekendDays" multiple>
+                                        <option value="friday" selected>الجمعة</option>
+                                        <option value="saturday">السبت</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary" data-lang="save">حفظ</button>
+                            </form>
+                        </div>
+                        
+                        <div class="settings-card">
+                            <h3 data-lang="appearanceSettings">إعدادات المظهر</h3>
+                            <div class="form-group">
+                                <label data-lang="theme">السمة</label>
+                                <select id="themeSelect">
+                                    <option value="light" data-lang="light">فاتح</option>
+                                    <option value="dark" data-lang="dark">داكن</option>
+                                    <option value="blue" data-lang="blue">أزرق</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label data-lang="language">اللغة</label>
+                                <select id="languageSelectSettings">
+                                    <option value="ar">العربية</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enableAnimations">
+                                    <span data-lang="enableAnimations">تفعيل الرسوم المتحركة</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-card">
+                            <h3 data-lang="securitySettings">إعدادات الأمان</h3>
+                            <form id="passwordChangeForm">
+                                <div class="form-group">
+                                    <label data-lang="currentPassword">كلمة المرور الحالية</label>
+                                    <input type="password" id="currentPassword">
+                                </div>
+                                <div class="form-group">
+                                    <label data-lang="newPassword">كلمة المرور الجديدة</label>
+                                    <input type="password" id="newPassword">
+                                </div>
+                                <div class="form-group">
+                                    <label data-lang="confirmPassword">تأكيد كلمة المرور</label>
+                                    <input type="password" id="confirmPassword">
+                                </div>
+                                <button type="submit" class="btn btn-primary" data-lang="changePassword">تغيير كلمة المرور</button>
+                            </form>
+                        </div>
+                        
+                        <div class="settings-card">
+                            <h3 data-lang="backupSettings">النسخ الاحتياطي</h3>
+                            <div class="backup-actions">
+                                <button class="btn btn-primary" id="backupData">
+                                    <i class="fas fa-download"></i> <span data-lang="backupNow">نسخ احتياطي الآن</span>
+                                </button>
+                                <button class="btn btn-secondary" id="restoreData">
+                                    <i class="fas fa-upload"></i> <span data-lang="restoreData">استعادة بيانات</span>
+                                </button>
+                                <button class="btn btn-danger" id="clearData">
+                                    <i class="fas fa-trash"></i> <span data-lang="clearData">مسح البيانات</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="employeeModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="employeeModalTitle" data-lang="addEmployee">إضافة موظف</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="employeeForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-lang="fullName">الاسم الكامل</label>
+                        <input type="text" id="empFullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="email">البريد الإلكتروني</label>
+                        <input type="email" id="empEmail" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-lang="phone">الهاتف</label>
+                        <input type="tel" id="empPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="department">القسم</label>
+                        <select id="empDepartment" required>
+                            <option value="">اختر القسم</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-lang="position">المنصب</label>
+                        <input type="text" id="empPosition" required>
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="joinDate">تاريخ التعيين</label>
+                        <input type="date" id="empJoinDate" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-lang="salary">الراتب</label>
+                        <input type="number" id="empSalary" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="status">الحالة</label>
+                        <select id="empStatus">
+                            <option value="active" data-lang="active">نشط</option>
+                            <option value="inactive" data-lang="inactive">غير نشط</option>
+                            <option value="on_leave" data-lang="onLeave">في إجازة</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-close" data-lang="cancel">إلغاء</button>
+                    <button type="submit" class="btn btn-primary" data-lang="save">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="taskModalTitle" data-lang="addTask">إضافة مهمة</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label data-lang="taskTitle">عنوان المهمة</label>
+                    <input type="text" id="taskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label data-lang="description">الوصف</label>
+                    <textarea id="taskDescription" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-lang="assignedTo">مسندة إلى</label>
+                        <select id="taskAssignedTo">
+                            <option value="">اختر الموظف</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="priority">الأولوية</label>
+                        <select id="taskPriority">
+                            <option value="low" data-lang="low">منخفضة</option>
+                            <option value="medium" selected data-lang="medium">متوسطة</option>
+                            <option value="high" data-lang="high">عالية</option>
+                            <option value="urgent" data-lang="urgent">عاجلة</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-lang="dueDate">تاريخ الاستحقاق</label>
+                        <input type="date" id="taskDueDate">
+                    </div>
+                    <div class="form-group">
+                        <label data-lang="status">الحالة</label>
+                        <select id="taskStatus">
+                            <option value="todo" data-lang="toDo">للتنفيذ</option>
+                            <option value="in_progress" data-lang="inProgress">قيد التنفيذ</option>
+                            <option value="review" data-lang="review">مراجعة</option>
+                            <option value="done" data-lang="done">مكتمل</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-close" data-lang="cancel">إلغاء</button>
+                    <button type="submit" class="btn btn-primary" data-lang="save">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/lang.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/employees.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/transfers.js"></script>
+    <script src="js/custodies.js"></script>
+    <script src="js/finances.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

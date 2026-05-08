@@ -1,0 +1,220 @@
+/* HR Pro System - Themes Stylesheet */
+
+/* ===== Dark Theme ===== */
+.dark-theme {
+    --bg-primary: #1e293b;
+    --bg-secondary: #0f172a;
+    --bg-tertiary: #334155;
+    
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    
+    --border-color: #475569;
+}
+
+.dark-theme .sidebar {
+    background-color: var(--bg-primary);
+    border-left-color: var(--border-color);
+}
+
+.dark-theme .top-header {
+    background-color: var(--bg-primary);
+    border-bottom-color: var(--border-color);
+}
+
+.dark-theme .modal-content {
+    background-color: var(--bg-primary);
+}
+
+.dark-theme .kpi-card,
+.dark-theme .chart-card,
+.dark-theme .activity-section,
+.dark-theme .table-container,
+.dark-theme .settings-card,
+.dark-theme .report-card,
+.dark-theme .summary-card {
+    background-color: var(--bg-primary);
+}
+
+.dark-theme .kanban-column {
+    background-color: var(--bg-tertiary);
+}
+
+.dark-theme .task-card {
+    background-color: var(--bg-primary);
+}
+
+.dark-theme .data-table thead {
+    background-color: var(--bg-tertiary);
+}
+
+.dark-theme .data-table tbody tr:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.dark-theme .search-box input {
+    background-color: var(--bg-tertiary);
+}
+
+.dark-theme .search-box input:focus {
+    background-color: var(--bg-primary);
+}
+
+.dark-theme .dropdown-content {
+    background-color: var(--bg-primary);
+}
+
+.dark-theme .notification-item:hover {
+    background-color: var(--bg-tertiary);
+}
+
+/* ===== Blue Theme ===== */
+.blue-theme {
+    --primary-color: #1e40af;
+    --primary-dark: #1e3a8a;
+    --primary-light: #3b82f6;
+    
+    --bg-primary: #ffffff;
+    --bg-secondary: #eff6ff;
+    --bg-tertiary: #dbeafe;
+    
+    --text-primary: #1e3a8a;
+    --text-secondary: #3b82f6;
+    --text-muted: #93c5fd;
+    
+    --border-color: #bfdbfe;
+}
+
+.blue-theme .sidebar {
+    background-color: var(--bg-primary);
+}
+
+.blue-theme .top-header {
+    background-color: var(--bg-primary);
+}
+
+.blue-theme .kpi-icon.blue {
+    background-color: rgba(30, 64, 175, 0.1);
+    color: var(--primary-color);
+}
+
+/* ===== Green Theme ===== */
+.green-theme {
+    --primary-color: #059669;
+    --primary-dark: #047857;
+    --primary-light: #10b981;
+    
+    --bg-secondary: #ecfdf5;
+    --bg-tertiary: #d1fae5;
+    
+    --border-color: #a7f3d0;
+}
+
+.green-theme .kpi-icon.blue {
+    background-color: rgba(5, 150, 105, 0.1);
+    color: var(--primary-color);
+}
+
+/* ===== Purple Theme ===== */
+.purple-theme {
+    --primary-color: #7c3aed;
+    --primary-dark: #6d28d9;
+    --primary-light: #8b5cf6;
+    
+    --bg-secondary: #f5f3ff;
+    --bg-tertiary: #ede9fe;
+    
+    --border-color: #ddd6fe;
+}
+
+.purple-theme .kpi-icon.blue {
+    background-color: rgba(124, 58, 237, 0.1);
+    color: var(--primary-color);
+}
+
+/* ===== Orange Theme ===== */
+.orange-theme {
+    --primary-color: #ea580c;
+    --primary-dark: #c2410c;
+    --primary-light: #f97316;
+    
+    --bg-secondary: #fff7ed;
+    --bg-tertiary: #ffedd5;
+    
+    --border-color: #fed7aa;
+}
+
+.orange-theme .kpi-icon.blue {
+    background-color: rgba(234, 88, 12, 0.1);
+    color: var(--primary-color);
+}
+
+/* ===== Red Theme ===== */
+.red-theme {
+    --primary-color: #dc2626;
+    --primary-dark: #b91c1c;
+    --primary-light: #ef4444;
+    
+    --bg-secondary: #fef2f2;
+    --bg-tertiary: #fee2e2;
+    
+    --border-color: #fecaca;
+}
+
+.red-theme .kpi-icon.blue {
+    background-color: rgba(220, 38, 38, 0.1);
+    color: var(--primary-color);
+}
+
+/* ===== Theme Transition ===== */
+body {
+    transition: background-color var(--transition-normal), 
+                color var(--transition-normal);
+}
+
+.sidebar,
+.top-header,
+.modal-content,
+.kpi-card,
+.chart-card,
+.activity-section,
+.table-container,
+.settings-card,
+.report-card,
+.summary-card,
+.kanban-column,
+.task-card {
+    transition: background-color var(--transition-normal),
+                border-color var(--transition-normal);
+}
+
+/* ===== High Contrast Mode ===== */
+.high-contrast {
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --border-color: #000000;
+}
+
+.high-contrast.dark-theme {
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --border-color: #ffffff;
+}
+
+.high-contrast .btn {
+    border: 2px solid currentColor;
+}
+
+.high-contrast input,
+.high-contrast select,
+.high-contrast textarea {
+    border: 2px solid var(--text-primary);
+}
+
+/* ===== Reduced Motion ===== */
+.reduce-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+}
