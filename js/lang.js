@@ -1,70 +1,107 @@
-// HR Pro System - Translations
+// HR Pro System - Language Translations
 
 const translations = {
     ar: {
-        appName: 'HR Pro',
-        loginTitle: 'تسجيل الدخول',
+        // System
+        systemTitle: 'HR Pro System',
+        loginSubtitle: 'نظام إدارة الموارد البشرية الاحترافي',
+        
+        // Login
         username: 'اسم المستخدم',
         password: 'كلمة المرور',
-        loginBtn: 'دخول',
-        logout: 'خروج',
+        rememberMe: 'تذكرني',
+        forgotPassword: 'نسيت كلمة المرور؟',
+        login: 'تسجيل الدخول',
+        
+        // Navigation
         dashboard: 'لوحة التحكم',
         employees: 'الموظفين',
         tasks: 'المهام',
         transfers: 'الانتقالات',
-        custodies: 'العهد',
-        finances: 'السلف',
+        custodies: 'العهد والأصول',
+        finances: 'السلف والتحصيلات',
         reports: 'التقارير',
         settings: 'الإعدادات',
         developer: 'عن المطور',
+        logout: 'خروج',
+        
+        // Dashboard
+        home: 'الرئيسية',
         totalEmployees: 'إجمالي الموظفين',
         activeTasks: 'المهام النشطة',
-        pendingTransfers: 'انتقالات معلقة',
-        totalFinances: 'إجمالي السلف',
-        employeeStats: 'إحصائيات الموظفين',
-        taskStats: 'إحصائيات المهام',
-        addEmployee: 'إضافة موظف',
-        editEmployee: 'تعديل موظف',
+        pendingTransfers: 'طلبات الانتظار',
+        totalAdvances: 'إجمالي السلف',
+        employeeDistribution: 'توزيع الموظفين',
+        monthlyTasks: 'المهام الشهرية',
+        quickActions: 'إجراءات سريعة',
+        addEmployee: 'موظف جديد',
+        newTask: 'مهمة جديدة',
+        newLoan: 'طلب سلفة',
+        recentActivity: 'النشاط الأخير',
+        
+        // Employees
+        employeeId: 'رقم الموظف',
         name: 'الاسم',
-        jobTitle: 'المسمى الوظيفي',
         department: 'القسم',
+        position: 'المنصب',
+        joinDate: 'تاريخ التعيين',
+        status: 'الحالة',
         actions: 'الإجراءات',
-        edit: 'تعديل',
-        delete: 'حذف',
+        searchEmployee: 'بحث عن موظف...',
+        allDepartments: 'جميع الأقسام',
+        allStatuses: 'جميع الحالات',
+        active: 'نشط',
+        inactive: 'غير نشط',
+        onLeave: 'في إجازة',
+        export: 'تصدير',
+        addTask: 'إضافة مهمة',
+        
+        // Tasks
+        toDo: 'للتنفيذ',
+        inProgress: 'قيد التنفيذ',
+        review: 'مراجعة',
+        completed: 'مكتملة',
+        
+        // Common
+        searchPlaceholder: 'بحث شامل...',
+        notifications: 'الإشعارات',
+        markAllRead: 'تحديد الكل كمقروء',
         save: 'حفظ',
         cancel: 'إلغاء',
-        todo: 'للقيام به',
-        inProgress: 'قيد التنفيذ',
-        done: 'منجز',
-        addTask: 'إضافة مهمة',
-        employee: 'الموظف',
-        fromDepartment: 'من قسم',
-        toDepartment: 'إلى قسم',
-        date: 'التاريخ',
-        status: 'الحالة',
-        addTransfer: 'إضافة انتقال',
-        item: 'العهد',
-        assignedTo: 'مسؤول',
-        addCustody: 'إضافة عهد',
-        amount: 'المبلغ',
-        addFinance: 'إضافة سلفة',
-        employeesReport: 'تقرير الموظفين',
-        tasksReport: 'تقرير المهام',
-        financesReport: 'تقرير السلف',
-        generalSettings: 'الإعدادات العامة',
-        companyName: 'اسم الشركة',
-        developerInfo: 'معلومات المطور',
-        phone: 'الهاتف',
-        email: 'البريد الإلكتروني',
-        version: 'إصدار النظام'
+        delete: 'حذف',
+        edit: 'تعديل',
+        add: 'إضافة',
+        close: 'إغلاق',
+        confirm: 'تأكيد',
+        yes: 'نعم',
+        no: 'لا',
+        
+        // Messages
+        savedSuccessfully: 'تم الحفظ بنجاح',
+        deletedSuccessfully: 'تم الحذف بنجاح',
+        errorOccurred: 'حدث خطأ',
+        confirmDelete: 'هل أنت متأكد من الحذف؟',
+        
+        // Developer
+        developerName: 'أحمد مصطفى إبراهيم',
+        developerPhone: '01225155329',
+        developerEmail: 'a12345.mostafa@gmail.com',
+        systemVersion: 'HR Pro System v2.0.0'
     },
+    
     en: {
-        appName: 'HR Pro',
-        loginTitle: 'Login',
+        // System
+        systemTitle: 'HR Pro System',
+        loginSubtitle: 'Professional Human Resources Management System',
+        
+        // Login
         username: 'Username',
         password: 'Password',
-        loginBtn: 'Login',
-        logout: 'Logout',
+        rememberMe: 'Remember me',
+        forgotPassword: 'Forgot password?',
+        login: 'Login',
+        
+        // Navigation
         dashboard: 'Dashboard',
         employees: 'Employees',
         tasks: 'Tasks',
@@ -73,49 +110,73 @@ const translations = {
         finances: 'Finances',
         reports: 'Reports',
         settings: 'Settings',
-        developer: 'Developer',
+        developer: 'About Developer',
+        logout: 'Logout',
+        
+        // Dashboard
+        home: 'Home',
         totalEmployees: 'Total Employees',
         activeTasks: 'Active Tasks',
         pendingTransfers: 'Pending Transfers',
-        totalFinances: 'Total Finances',
-        employeeStats: 'Employee Statistics',
-        taskStats: 'Task Statistics',
-        addEmployee: 'Add Employee',
-        editEmployee: 'Edit Employee',
+        totalAdvances: 'Total Advances',
+        employeeDistribution: 'Employee Distribution',
+        monthlyTasks: 'Monthly Tasks',
+        quickActions: 'Quick Actions',
+        addEmployee: 'New Employee',
+        newTask: 'New Task',
+        newLoan: 'New Loan',
+        recentActivity: 'Recent Activity',
+        
+        // Employees
+        employeeId: 'Employee ID',
         name: 'Name',
-        jobTitle: 'Job Title',
         department: 'Department',
+        position: 'Position',
+        joinDate: 'Join Date',
+        status: 'Status',
         actions: 'Actions',
-        edit: 'Edit',
-        delete: 'Delete',
+        searchEmployee: 'Search employee...',
+        allDepartments: 'All Departments',
+        allStatuses: 'All Statuses',
+        active: 'Active',
+        inactive: 'Inactive',
+        onLeave: 'On Leave',
+        export: 'Export',
+        addTask: 'Add Task',
+        
+        // Tasks
+        toDo: 'To Do',
+        inProgress: 'In Progress',
+        review: 'Review',
+        completed: 'Completed',
+        
+        // Common
+        searchPlaceholder: 'Global search...',
+        notifications: 'Notifications',
+        markAllRead: 'Mark all as read',
         save: 'Save',
         cancel: 'Cancel',
-        todo: 'To Do',
-        inProgress: 'In Progress',
-        done: 'Done',
-        addTask: 'Add Task',
-        employee: 'Employee',
-        fromDepartment: 'From Department',
-        toDepartment: 'To Department',
-        date: 'Date',
-        status: 'Status',
-        addTransfer: 'Add Transfer',
-        item: 'Item',
-        assignedTo: 'Assigned To',
-        addCustody: 'Add Custody',
-        amount: 'Amount',
-        addFinance: 'Add Finance',
-        employeesReport: 'Employees Report',
-        tasksReport: 'Tasks Report',
-        financesReport: 'Finances Report',
-        generalSettings: 'General Settings',
-        companyName: 'Company Name',
-        developerInfo: 'Developer Info',
-        phone: 'Phone',
-        email: 'Email',
-        version: 'System Version'
+        delete: 'Delete',
+        edit: 'Edit',
+        add: 'Add',
+        close: 'Close',
+        confirm: 'Confirm',
+        yes: 'Yes',
+        no: 'No',
+        
+        // Messages
+        savedSuccessfully: 'Saved successfully',
+        deletedSuccessfully: 'Deleted successfully',
+        errorOccurred: 'An error occurred',
+        confirmDelete: 'Are you sure you want to delete?',
+        
+        // Developer
+        developerName: 'Ahmed Mostafa Ibrahim',
+        developerPhone: '01225155329',
+        developerEmail: 'a12345.mostafa@gmail.com',
+        systemVersion: 'HR Pro System v2.0.0'
     }
 };
 
-// Make translations available globally
+// Export translations
 window.translations = translations;
