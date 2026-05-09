@@ -2,44 +2,15 @@
 # Dependencies
 node_modules/
 
-# Environment variables
-.env
+# Environment
 .env.local
+.env
 .env.*
 
-# Logs
+# Logs and temp files
 *.log
-
-# IDE files
-.vscode/
-.idea/
-
-# Python cache (if any Python files exist in project)
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Build outputs
-dist/
-build/
-target/
-
-# Temporary files
 *.tmp
-*.swp
-*.swo
 
-# OS specific
-.DS_Store
-Thumbs.db
-
-# Coverage reports
-coverage/
-htmlcov/
-.coverage
-
-# Testing
-.mypy_cache/
-.pytest_cache/
+# Editors
+.vscode/
 ```
