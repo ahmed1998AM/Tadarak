@@ -1,6 +1,22 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
+// Alias for protect middleware
+export const auth = protect;
+
+// Require specific role(s) - alias for authorize
+export const requireRole = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `الدور '${req.user.role}' غير مصرح له بالوصول إلى هذا المورد`
+      });
+    }
+    next();
+  };
+};
+
 export const protect = async (req, res, next) => {
   let token;
 

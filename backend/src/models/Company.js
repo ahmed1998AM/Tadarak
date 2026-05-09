@@ -163,6 +163,33 @@ companySchema.methods.canAddEmployee = async function() {
   return count < this.features.maxEmployees;
 };
 
+// Static method to get plan limits
+companySchema.statics.getPlanLimits = function(planId) {
+  const limits = {
+    free: { maxUsers: 5, maxStorage: '1GB', maxProjects: 3 },
+    starter: { maxUsers: 20, maxStorage: '10GB', maxProjects: 10 },
+    professional: { maxUsers: 100, maxStorage: '50GB', maxProjects: -1 },
+    enterprise: { maxUsers: -1, maxStorage: '500GB', maxProjects: -1 }
+  };
+  return limits[planId] || limits.free;
+};
+
+// Instance method to get plan limits
+companySchema.methods.getPlanLimits = function() {
+  return Company.getPlanLimits(this.subscription.plan);
+};
+
+// Get plan features
+companySchema.methods.getPlanFeatures = function() {
+  const features = {
+    free: ['Basic HR Management', 'Task Management', 'Limited Reports'],
+    starter: ['All Free Features', 'Advanced Reports', '24/7 Support', 'Daily Backups'],
+    professional: ['All Starter Features', 'Full Customization', 'Unlimited API', 'Multi-level Approvals'],
+    enterprise: ['All Professional Features', 'Private Server', 'Dedicated Account Manager', 'Custom Integrations']
+  };
+  return features[this.subscription.plan] || features.free;
+};
+
 const Company = mongoose.model('Company', companySchema);
 
 export default Company;
