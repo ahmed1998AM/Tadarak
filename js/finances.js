@@ -67,8 +67,14 @@ const Finances = {
 
             Utils.showToast('تم إرسال طلب السلفة بنجاح', 'success');
             
-            // Notify admin
-            Notifications.notifyFinanceStatus('pending', `طلب سلفة بقيمة ${Utils.formatCurrency(newAdvance.amount)}`);
+            // Notify admin (only if Notifications is available)
+            if (typeof Notifications !== 'undefined') {
+                try {
+                    Notifications.notifyFinanceStatus('pending', `طلب سلفة بقيمة ${Utils.formatCurrency(newAdvance.amount)}`);
+                } catch (e) {
+                    console.log('Notification error:', e);
+                }
+            }
 
             return true;
         } catch (error) {
@@ -119,7 +125,15 @@ const Finances = {
             this.saveFinances(finances);
 
             Utils.showToast('تم تسجيل التحصيل بنجاح', 'success');
-            Notifications.notifyFinanceStatus('paid', `تم سداد ${Utils.formatCurrency(paymentAmount)} من السلفة`);
+            
+            // Notify (only if Notifications is available)
+            if (typeof Notifications !== 'undefined') {
+                try {
+                    Notifications.notifyFinanceStatus('paid', `تم سداد ${Utils.formatCurrency(paymentAmount)} من السلفة`);
+                } catch (e) {
+                    console.log('Notification error:', e);
+                }
+            }
 
             return true;
         } catch (error) {
@@ -162,10 +176,16 @@ const Finances = {
                 'success'
             );
 
-            // Notify employee
-            Notifications.notifyFinanceStatus(status, 
-                `تم ${status === 'approved' ? 'الموافقة' : 'الرفض'} لطلب السلفة الخاص بك`
-            );
+            // Notify employee (only if Notifications is available)
+            if (typeof Notifications !== 'undefined') {
+                try {
+                    Notifications.notifyFinanceStatus(status, 
+                        `تم ${status === 'approved' ? 'الموافقة' : 'الرفض'} لطلب السلفة الخاص بك`
+                    );
+                } catch (e) {
+                    console.log('Notification error:', e);
+                }
+            }
 
             return true;
         } catch (error) {
@@ -356,15 +376,17 @@ const Finances = {
         const installments = prompt(currentLang === 'ar' ? 'عدد الأقساط:' : 'Number of installments:') || '12';
         const reason = prompt(currentLang === 'ar' ? 'سبب الطلب (اختياري):' : 'Reason (optional):') || '';
 
-        this.requestAdvance({
+        const success = this.requestAdvance({
             amount: parseFloat(amount),
             installments: parseInt(installments),
             reason: reason
         });
 
-        this.renderTable();
-        this.updateSummary();
-        Dashboard.refresh();
+        if (success) {
+            this.renderTable();
+            this.updateSummary();
+            Dashboard.refresh();
+        }
     },
 
     /**

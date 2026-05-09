@@ -107,12 +107,20 @@ const Employees = {
             }
 
             Utils.showToast('تم إضافة الموظف بنجاح', 'success');
-            Notifications.add({
-                title: 'موظف جديد',
-                message: `تم إضافة ${employeeData.fullName} إلى النظام`,
-                type: Notifications.types.SUCCESS,
-                icon: 'fas fa-user-plus'
-            });
+            
+            // Notify (only if Notifications is available)
+            if (typeof Notifications !== 'undefined') {
+                try {
+                    Notifications.add({
+                        title: 'موظف جديد',
+                        message: `تم إضافة ${employeeData.fullName} إلى النظام`,
+                        type: Notifications.types.SUCCESS,
+                        icon: 'fas fa-user-plus'
+                    });
+                } catch (e) {
+                    console.log('Notification error:', e);
+                }
+            }
             
             return true;
         } catch (error) {

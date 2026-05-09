@@ -73,9 +73,13 @@ const Custodies = {
 
             Utils.showToast('تم إضافة العهد بنجاح', 'success');
             
-            // Notify assigned user
-            if (newCustody.assignedTo) {
-                Notifications.notifyCustodyAssignment(newCustody.assetName, newCustody.assignedTo);
+            // Notify assigned user (only if Notifications is available)
+            if (typeof Notifications !== 'undefined' && newCustody.assignedTo) {
+                try {
+                    Notifications.notifyCustodyAssignment(newCustody.assetName, newCustody.assignedTo);
+                } catch (e) {
+                    console.log('Notification error:', e);
+                }
             }
 
             return true;
@@ -282,7 +286,7 @@ const Custodies = {
 
         const expectedReturnDate = prompt(currentLang === 'ar' ? 'تاريخ الإرجاع المتوقع (YYYY-MM-DD):' : 'Expected return date (YYYY-MM-DD):');
 
-        this.add({
+        const success = this.add({
             assetId: 'AST-' + Date.now(),
             assetName: assetName,
             assetType: assetType,
@@ -290,8 +294,10 @@ const Custodies = {
             expectedReturnDate: expectedReturnDate || null
         });
 
-        this.renderTable();
-        Dashboard.refresh();
+        if (success) {
+            this.renderTable();
+            Dashboard.refresh();
+        }
     },
 
     /**
