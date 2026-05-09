@@ -1,0 +1,489 @@
+/* HR Pro System - Enhanced UI Styles */
+
+/* ===== Improved Sidebar Transitions ===== */
+.sidebar {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease;
+}
+
+.sidebar-header {
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+}
+
+/* Navigation Items with Better Hover Effects */
+.nav-item {
+    position: relative;
+    margin: 4px 8px;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--primary-color);
+    transform: scaleY(0);
+    transition: transform 0.2s ease;
+    transform-origin: bottom;
+}
+
+html[dir="ltr"] .nav-item::before {
+    left: auto;
+    right: 0;
+}
+
+.nav-item:hover::before {
+    transform: scaleY(0.5);
+}
+
+.nav-item.active::before {
+    transform: scaleY(1);
+}
+
+.nav-item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.nav-item:hover a {
+    color: var(--primary-color);
+    background: rgba(37, 99, 235, 0.08);
+    transform: translateX(-4px);
+}
+
+html[dir="ltr"] .nav-item:hover a {
+    transform: translateX(4px);
+}
+
+.nav-item.active a {
+    color: var(--primary-color);
+    font-weight: 600;
+    background: rgba(37, 99, 235, 0.12);
+}
+
+.nav-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1em;
+    transition: transform 0.2s ease;
+}
+
+.nav-item:hover i {
+    transform: scale(1.1);
+}
+
+/* Sidebar Toggle Button Enhancement */
+.sidebar-toggle {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-secondary);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(180deg);
+}
+
+/* ===== Page Transitions ===== */
+.page {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.page-header {
+    animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Card Animations ===== */
+.kpi-card, .stat-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card::before, .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.kpi-card:hover::before, .stat-card:hover::before {
+    left: 100%;
+}
+
+.kpi-card:hover, .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.kpi-icon {
+    transition: all 0.3s ease;
+}
+
+.kpi-card:hover .kpi-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* ===== Button Improvements ===== */
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::after {
+    width: 200px;
+    height: 200px;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-danger:hover {
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ===== Table Enhancements ===== */
+.table-responsive {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+th {
+    background: var(--bg-tertiary);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    transition: background 0.2s ease;
+}
+
+th:hover {
+    background: var(--border-color);
+}
+
+td {
+    transition: background 0.2s ease;
+}
+
+tr:hover td {
+    background: rgba(37, 99, 235, 0.05);
+}
+
+/* ===== Modal Improvements ===== */
+.modal {
+    backdrop-filter: blur(5px);
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    transform: scale(0.95);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal.active .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.modal-close {
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    transform: rotate(90deg);
+    color: var(--danger-color);
+}
+
+/* ===== Loading Skeleton ===== */
+.skeleton-loader {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.skeleton-line {
+    height: 16px;
+    margin: 8px 0;
+    background: linear-gradient(90deg, 
+        var(--bg-tertiary) 0%, 
+        var(--border-color) 50%, 
+        var(--bg-tertiary) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.skeleton-line.short {
+    width: 60%;
+}
+
+.skeleton-line.medium {
+    width: 80%;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ===== Toast Notification Enhancement ===== */
+.toast {
+    backdrop-filter: blur(10px);
+    border-left: 4px solid;
+    box-shadow: var(--shadow-xl);
+    transform: translateX(100%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.success {
+    border-left-color: var(--success-color);
+}
+
+.toast.error {
+    border-left-color: var(--danger-color);
+}
+
+.toast.warning {
+    border-left-color: var(--warning-color);
+}
+
+.toast.info {
+    border-left-color: var(--info-color);
+}
+
+/* ===== Form Input Enhancements ===== */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    transition: all 0.3s ease;
+    border: 2px solid var(--border-color);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+.input-with-icon i {
+    transition: color 0.2s ease;
+}
+
+.input-with-icon input:focus + i,
+.input-with-icon:focus-within i {
+    color: var(--primary-color);
+}
+
+/* ===== Badge Improvements ===== */
+.badge, .status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.badge:hover, .status-badge:hover {
+    transform: scale(1.05);
+}
+
+/* ===== Scrollbar Styling ===== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* ===== Permission Grid for Profile ===== */
+.permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    padding: 16px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.permission-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.permission-item.granted {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+}
+
+.permission-item:not(.granted) {
+    opacity: 0.5;
+}
+
+.permission-item i {
+    font-size: 1.2em;
+}
+
+.role-info {
+    padding: 16px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+/* ===== Dark Mode Specific Enhancements ===== */
+.dark-theme .nav-item:hover a {
+    background: rgba(37, 99, 235, 0.15);
+}
+
+.dark-theme .kpi-card,
+.dark-theme .stat-card {
+    background: var(--bg-secondary);
+}
+
+.dark-theme .modal-content {
+    background: var(--bg-primary);
+}
+
+/* ===== Responsive Improvements ===== */
+@media (max-width: 768px) {
+    .sidebar {
+        box-shadow: var(--shadow-xl);
+    }
+
+    .sidebar-overlay {
+        backdrop-filter: blur(5px);
+        transition: opacity 0.3s ease;
+    }
+
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+    .sidebar,
+    .top-header,
+    .btn,
+    .notifications-dropdown {
+        display: none !important;
+    }
+
+    .main-content {
+        margin: 0;
+        padding: 0;
+    }
+
+    .page {
+        opacity: 1;
+        transform: none;
+    }
+}
