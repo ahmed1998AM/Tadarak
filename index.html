@@ -436,7 +436,7 @@
                 <div id="employeesPage" class="page">
                     <div class="page-header">
                         <h1 data-lang="employees">الموظفين</h1>
-                        <button class="btn btn-primary" id="addEmployeeBtn">
+                        <button class="btn btn-primary permission-required" data-permission="employees.create" id="addEmployeeBtn">
                             <i class="fas fa-plus"></i> <span data-lang="addEmployee">إضافة موظف</span>
                         </button>
                     </div>
@@ -458,7 +458,7 @@
                                 <option value="on_leave" data-lang="onLeave">في إجازة</option>
                             </select>
                         </div>
-                        <button class="btn btn-secondary" id="exportEmployeesBtn">
+                        <button class="btn btn-secondary permission-required" data-permission="employees.export" id="exportEmployeesBtn">
                             <i class="fas fa-file-export"></i> <span data-lang="export">تصدير</span>
                         </button>
                     </div>
@@ -487,7 +487,7 @@
                 <div id="tasksPage" class="page">
                     <div class="page-header">
                         <h1 data-lang="tasks">المهام</h1>
-                        <button class="btn btn-primary" id="addTaskBtn">
+                        <button class="btn btn-primary permission-required" data-permission="tasks.create" id="addTaskBtn">
                             <i class="fas fa-plus"></i> <span data-lang="addTask">إضافة مهمة</span>
                         </button>
                     </div>
@@ -528,7 +528,7 @@
                 <div id="transfersPage" class="page">
                     <div class="page-header">
                         <h1 data-lang="transfers">الانتقالات</h1>
-                        <button class="btn btn-primary" id="requestTransferBtn">
+                        <button class="btn btn-primary permission-required" data-permission="transfers.request" id="requestTransferBtn">
                             <i class="fas fa-plus"></i> <span data-lang="requestTransfer">طلب نقل</span>
                         </button>
                     </div>
@@ -568,7 +568,7 @@
                 <div id="custodiesPage" class="page">
                     <div class="page-header">
                         <h1 data-lang="custodies">العهد والأصول</h1>
-                        <button class="btn btn-primary" id="addCustodyBtn">
+                        <button class="btn btn-primary permission-required" data-permission="custodies.assign" id="addCustodyBtn">
                             <i class="fas fa-plus"></i> <span data-lang="addCustody">إضافة عهد</span>
                         </button>
                     </div>
@@ -602,7 +602,7 @@
                 <div id="financesPage" class="page">
                     <div class="page-header">
                         <h1 data-lang="finances">السلف والتحصيلات</h1>
-                        <button class="btn btn-primary" id="requestAdvanceBtn">
+                        <button class="btn btn-primary permission-required" data-permission="finances.request" id="requestAdvanceBtn">
                             <i class="fas fa-plus"></i> <span data-lang="requestAdvance">طلب سلفة</span>
                         </button>
                     </div>

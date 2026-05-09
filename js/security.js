@@ -517,3 +517,81 @@ document.addEventListener('DOMContentLoaded', () => {
 window.EnhancedSecurity = EnhancedSecurity;
 window.RBAC = RBAC;
 window.PermissionUI = PermissionUI;
+
+/**
+ * Apply permissions to UI elements on page load
+ * Automatically hides/disables elements based on user permissions
+ */
+const PermissionEnforcer = {
+    /**
+     * Initialize permission enforcement
+     */
+    init() {
+        this.applyPermissionsToUI();
+    },
+
+    /**
+     * Apply permissions to all elements with data-permission attribute
+     */
+    applyPermissionsToUI() {
+        // Wait for RBAC to be initialized
+        if (typeof RBAC === 'undefined' || !RBAC.init) {
+            setTimeout(() => this.applyPermissionsToUI(), 100);
+            return;
+        }
+
+        const user = Auth.getCurrentUser();
+        if (!user) return;
+
+        // Get all elements with data-permission attribute
+        const permissionElements = document.querySelectorAll('[data-permission]');
+        
+        permissionElements.forEach(element => {
+            const requiredPermission = element.getAttribute('data-permission');
+            
+            if (requiredPermission && !RBAC.hasPermission(requiredPermission)) {
+                // Hide element if user doesn't have permission
+                element.style.display = 'none';
+                element.setAttribute('data-hidden-by-permission', 'true');
+            }
+        });
+
+        // Also check for permission-required class
+        const requiredElements = document.querySelectorAll('.permission-required');
+        requiredElements.forEach(element => {
+            const requiredPermission = element.getAttribute('data-permission');
+            
+            if (requiredPermission && !RBAC.hasPermission(requiredPermission)) {
+                element.style.display = 'none';
+                element.setAttribute('data-hidden-by-permission', 'true');
+            }
+        });
+
+        console.log('Permissions applied to UI elements');
+    },
+
+    /**
+     * Re-apply permissions (useful after role change)
+     */
+    refresh() {
+        // Show all hidden elements first
+        const hiddenElements = document.querySelectorAll('[data-hidden-by-permission]');
+        hiddenElements.forEach(element => {
+            element.style.display = '';
+            element.removeAttribute('data-hidden-by-permission');
+        });
+
+        // Re-apply permissions
+        this.applyPermissionsToUI();
+    }
+};
+
+// Initialize permission enforcer when DOM is ready and after RBAC
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        PermissionEnforcer.init();
+    }, 200);
+});
+
+// Make available globally
+window.PermissionEnforcer = PermissionEnforcer;

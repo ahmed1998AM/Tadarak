@@ -22,13 +22,13 @@ const Auth = {
         const users = Utils.storage.get('hr_users', []);
         
         if (users.length === 0) {
-            // Create default admin user
+            // Create default admin user with company_admin role
             const hashedPassword = await Utils.hashPassword('admin123');
             const adminUser = {
                 id: Utils.generateId(),
                 username: 'admin',
                 password: hashedPassword,
-                role: 'admin',
+                role: 'company_admin', // Use RBAC role
                 name: 'مدير النظام',
                 email: 'admin@hrpro.com',
                 department: 'الإدارة',
@@ -42,9 +42,23 @@ const Auth = {
             console.log('Default admin created: username=admin, password=admin123');
         }
 
-        // Check for existing session
+        // Check for existing session and validate expiration
         const session = Utils.session.get('hr_session');
         if (session && session.userId) {
+            // Check session expiration if EnhancedSecurity is available
+            if (typeof EnhancedSecurity !== 'undefined') {
+                const now = new Date();
+                const loginTime = new Date(session.loginTime);
+                const expirationHours = EnhancedSecurity.sessionConfig.expirationHours || 24;
+                const expirationTime = new Date(loginTime.getTime() + (expirationHours * 60 * 60 * 1000));
+                
+                if (now > expirationTime) {
+                    console.log('Session expired');
+                    this.logout();
+                    return;
+                }
+            }
+            
             const currentUser = users.find(u => u.id === session.userId);
             if (currentUser && currentUser.status === 'active' && !currentUser.isBlocked) {
                 this.showApp();
@@ -62,10 +76,19 @@ const Auth = {
      */
     async login(username, password) {
         try {
+            // Check if account is locked due to multiple failed attempts
+            if (typeof EnhancedSecurity !== 'undefined' && EnhancedSecurity.isAccountLocked(username)) {
+                return false;
+            }
+
             const users = Utils.storage.get('hr_users', []);
             const user = users.find(u => u.username === username);
 
             if (!user) {
+                // Track failed login attempt
+                if (typeof EnhancedSecurity !== 'undefined') {
+                    EnhancedSecurity.trackLoginAttempt(username, false);
+                }
                 Utils.showToast('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
                 return false;
             }
@@ -85,8 +108,17 @@ const Auth = {
             // Hash the entered password and compare
             const hashedPassword = await Utils.hashPassword(password);
             if (hashedPassword !== user.password) {
+                // Track failed login attempt
+                if (typeof EnhancedSecurity !== 'undefined') {
+                    EnhancedSecurity.trackLoginAttempt(username, false);
+                }
                 Utils.showToast('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
                 return false;
+            }
+
+            // Track successful login attempt (clear failed attempts)
+            if (typeof EnhancedSecurity !== 'undefined') {
+                EnhancedSecurity.trackLoginAttempt(username, true);
             }
 
             // Create session
@@ -134,12 +166,16 @@ const Auth = {
     },
 
     /**
-     * Check if user is admin
+     * Check if user is admin (supports both old 'admin' role and new RBAC roles)
      * @returns {boolean} Is admin
      */
     isAdmin() {
         const user = this.getCurrentUser();
-        return user && user.role === 'admin';
+        if (!user) return false;
+        
+        // Support both old admin role and new RBAC admin roles
+        const adminRoles = ['admin', 'super_admin', 'company_admin'];
+        return adminRoles.includes(user.role);
     },
 
     /**
@@ -171,7 +207,15 @@ const Auth = {
         const userAvatarEl = document.getElementById('userAvatar');
 
         if (userNameEl) userNameEl.textContent = user.name || user.username;
-        if (userRoleEl) userRoleEl.textContent = user.role === 'admin' ? 'مدير النظام' : 'موظف';
+        
+        // Use RBAC role name if available, otherwise fallback to old method
+        if (userRoleEl) {
+            if (typeof RBAC !== 'undefined' && RBAC.roles[user.role]) {
+                userRoleEl.textContent = RBAC.roles[user.role].name;
+            } else {
+                userRoleEl.textContent = user.role === 'admin' ? 'مدير النظام' : 'موظف';
+            }
+        }
         
         if (userAvatarEl) {
             // Generate avatar with initials
