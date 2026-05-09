@@ -309,10 +309,14 @@ const Tasks = {
      * Setup event listeners
      */
     setupEventListeners() {
-        // Add task button
+        // Add task button - check permission
         const addBtn = document.getElementById('addTaskBtn');
         if (addBtn) {
             addBtn.addEventListener('click', () => {
+                if (!RBAC || !RBAC.hasPermission('tasks.create')) {
+                    Utils.showToast(currentLang === 'ar' ? 'ليس لديك صلاحية إضافة مهمة' : 'You do not have permission to add tasks', 'error');
+                    return;
+                }
                 this.populateAssignedToDropdown();
                 document.getElementById('taskModalTitle').textContent = currentLang === 'ar' ? 'إضافة مهمة' : 'Add Task';
                 document.getElementById('taskForm').reset();
@@ -327,6 +331,20 @@ const Tasks = {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
 
+                // Check permission based on action
+                const editId = form.dataset.editId;
+                const requiredPermission = editId ? 'tasks.update' : 'tasks.create';
+                
+                if (!RBAC || !RBAC.hasPermission(requiredPermission)) {
+                    Utils.showToast(
+                        currentLang === 'ar' 
+                            ? (editId ? 'ليس لديك صلاحية تعديل المهمة' : 'ليس لديك صلاحية إضافة مهمة')
+                            : (editId ? 'You do not have permission to update tasks' : 'You do not have permission to add tasks'),
+                        'error'
+                    );
+                    return;
+                }
+
                 const formData = {
                     title: document.getElementById('taskTitle').value,
                     description: document.getElementById('taskDescription').value,
@@ -336,7 +354,6 @@ const Tasks = {
                     status: document.getElementById('taskStatus').value
                 };
 
-                const editId = form.dataset.editId;
                 if (editId) {
                     this.update(editId, formData);
                 } else {

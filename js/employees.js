@@ -169,6 +169,12 @@ const Employees = {
      */
     delete(id) {
         try {
+            // Check permission
+            if (!RBAC || !RBAC.hasPermission('employees.delete')) {
+                Utils.showToast(currentLang === 'ar' ? 'ليس لديك صلاحية حذف الموظف' : 'You do not have permission to delete employees', 'error');
+                return false;
+            }
+
             if (!confirm(currentLang === 'ar' ? 'هل أنت متأكد من حذف هذا الموظف؟' : 'Are you sure you want to delete this employee?')) {
                 return false;
             }
@@ -193,6 +199,12 @@ const Employees = {
      */
     toggleStatus(id) {
         try {
+            // Check permission
+            if (!RBAC || !RBAC.hasPermission('employees.update')) {
+                Utils.showToast(currentLang === 'ar' ? 'ليس لديك صلاحية تغيير حالة الموظف' : 'You do not have permission to change employee status', 'error');
+                return false;
+            }
+
             const employees = this.loadEmployees();
             const index = employees.findIndex(e => e.id === id);
 
@@ -216,6 +228,38 @@ const Employees = {
             Utils.showToast('حدث خطأ أثناء تغيير حالة الموظف', 'error');
             return false;
         }
+    },
+
+    /**
+     * Edit employee (open modal)
+     * @param {string} id - Employee ID
+     */
+    edit(id) {
+        // Check permission
+        if (!RBAC || !RBAC.hasPermission('employees.update')) {
+            Utils.showToast(currentLang === 'ar' ? 'ليس لديك صلاحية تعديل الموظف' : 'You do not have permission to edit employees', 'error');
+            return;
+        }
+
+        const employee = this.getById(id);
+        if (!employee) return;
+
+        // Fill modal with employee data
+        document.getElementById('employeeModalTitle').textContent = currentLang === 'ar' ? 'تعديل موظف' : 'Edit Employee';
+        document.getElementById('empFullName').value = employee.fullName;
+        document.getElementById('empEmail').value = employee.email;
+        document.getElementById('empPhone').value = employee.phone;
+        document.getElementById('empDepartment').value = employee.department;
+        document.getElementById('empPosition').value = employee.position;
+        document.getElementById('empJoinDate').value = employee.joinDate.split('T')[0];
+        document.getElementById('empSalary').value = employee.salary;
+        document.getElementById('empStatus').value = employee.status;
+
+        // Store editing ID
+        document.getElementById('employeeForm').dataset.editId = id;
+
+        // Open modal
+        document.getElementById('employeeModal').classList.add('active');
     },
 
     /**
@@ -345,6 +389,12 @@ const Employees = {
      * @param {string} id - Employee ID
      */
     edit(id) {
+        // Check permission
+        if (!RBAC || !RBAC.hasPermission('employees.update')) {
+            Utils.showToast(currentLang === 'ar' ? 'ليس لديك صلاحية تعديل الموظف' : 'You do not have permission to edit employees', 'error');
+            return;
+        }
+
         const employee = this.getById(id);
         if (!employee) return;
 
@@ -397,10 +447,15 @@ const Employees = {
      * Setup event listeners
      */
     setupEventListeners() {
-        // Add employee button
+        // Add employee button - check permission first
         const addBtn = document.getElementById('addEmployeeBtn');
         if (addBtn) {
+            // Permission check is handled by PermissionEnforcer via data-permission attribute
             addBtn.addEventListener('click', () => {
+                if (!RBAC || !RBAC.hasPermission('employees.create')) {
+                    Utils.showToast(currentLang === 'ar' ? 'ليس لديك صلاحية إضافة موظف' : 'You do not have permission to add employees', 'error');
+                    return;
+                }
                 document.getElementById('employeeModalTitle').textContent = currentLang === 'ar' ? 'إضافة موظف' : 'Add Employee';
                 document.getElementById('employeeForm').reset();
                 delete document.getElementById('employeeForm').dataset.editId;
@@ -414,6 +469,20 @@ const Employees = {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
 
+                // Check permission based on action
+                const editId = form.dataset.editId;
+                const requiredPermission = editId ? 'employees.update' : 'employees.create';
+                
+                if (!RBAC || !RBAC.hasPermission(requiredPermission)) {
+                    Utils.showToast(
+                        currentLang === 'ar' 
+                            ? (editId ? 'ليس لديك صلاحية تعديل الموظف' : 'ليس لديك صلاحية إضافة موظف')
+                            : (editId ? 'You do not have permission to edit employees' : 'You do not have permission to add employees'),
+                        'error'
+                    );
+                    return;
+                }
+
                 const formData = {
                     fullName: document.getElementById('empFullName').value,
                     email: document.getElementById('empEmail').value,
@@ -425,7 +494,6 @@ const Employees = {
                     status: document.getElementById('empStatus').value
                 };
 
-                const editId = form.dataset.editId;
                 if (editId) {
                     this.update(editId, formData);
                 } else {
@@ -447,10 +515,16 @@ const Employees = {
             }
         });
 
-        // Export button
+        // Export button - check permission
         const exportBtn = document.getElementById('exportEmployeesBtn');
         if (exportBtn) {
-            exportBtn.addEventListener('click', () => this.exportToCSV());
+            exportBtn.addEventListener('click', () => {
+                if (!RBAC || !RBAC.hasPermission('employees.export')) {
+                    Utils.showToast(currentLang === 'ar' ? 'ليس لديك صلاحية التصدير' : 'You do not have permission to export', 'error');
+                    return;
+                }
+                this.exportToCSV();
+            });
         }
 
         // Modal close buttons
