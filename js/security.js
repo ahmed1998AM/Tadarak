@@ -216,6 +216,10 @@ const RBAC = {
 
         // Reports
         'reports.view': 'عرض التقارير',
+        'reports.employees': 'تقرير الموظفين',
+        'reports.tasks': 'تقرير المهام',
+        'reports.finances': 'تقرير المالية',
+        'reports.attendance': 'تقرير الحضور',
         'reports.generate': 'توليد تقارير',
         'reports.export': 'تصدير تقارير',
 
@@ -245,7 +249,7 @@ const RBAC = {
                 'transfers.view', 'transfers.request', 'transfers.approve',
                 'custodies.view', 'custodies.assign', 'custodies.return',
                 'finances.view', 'finances.request', 'finances.approve', 'finances.reject',
-                'reports.view', 'reports.generate', 'reports.export',
+                'reports.view', 'reports.employees', 'reports.tasks', 'reports.finances', 'reports.attendance', 'reports.generate', 'reports.export',
                 'settings.view', 'settings.edit',
                 'users.view', 'users.create', 'users.edit', 'users.block'
             ]
@@ -258,7 +262,7 @@ const RBAC = {
                 'transfers.view', 'transfers.request', 'transfers.approve',
                 'custodies.view', 'custodies.assign', 'custodies.return',
                 'finances.view', 'finances.request', 'finances.approve',
-                'reports.view', 'reports.generate', 'reports.export',
+                'reports.view', 'reports.employees', 'reports.tasks', 'reports.finances', 'reports.attendance', 'reports.generate', 'reports.export',
                 'settings.view',
                 'users.view'
             ]
@@ -271,7 +275,7 @@ const RBAC = {
                 'transfers.view', 'transfers.request',
                 'custodies.view', 'custodies.assign',
                 'finances.view', 'finances.request',
-                'reports.view', 'reports.generate'
+                'reports.view', 'reports.employees', 'reports.tasks', 'reports.generate'
             ]
         },
         'team_lead': {
@@ -282,7 +286,7 @@ const RBAC = {
                 'transfers.view', 'transfers.request',
                 'custodies.view',
                 'finances.view', 'finances.request',
-                'reports.view'
+                'reports.view', 'reports.tasks'
             ]
         },
         'employee': {
