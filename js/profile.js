@@ -430,7 +430,7 @@ const UserProfile = {
     },
 
     /**
-     * Display permissions in modal
+     * Display permissions in modal using RBAC system
      */
     displayPermissions() {
         const permissionsList = document.getElementById('permissionsList');
@@ -442,6 +442,13 @@ const UserProfile = {
             return;
         }
 
+        // Use RBAC system if available, otherwise fallback to old method
+        if (typeof RBAC !== 'undefined' && RBAC.getCurrentUserPermissions) {
+            PermissionUI.renderPermissions('permissionsList');
+            return;
+        }
+
+        // Fallback to old method
         const permissions = this.getUserPermissions();
         const permissionLabels = {
             'all': 'جميع الصلاحيات',
