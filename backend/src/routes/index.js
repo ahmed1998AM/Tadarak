@@ -5,6 +5,10 @@ import employeeRoutes from './employeeRoutes.js';
 import taskRoutes from './taskRoutes.js';
 import companiesRoutes from './companiesRoutes.js';
 import subscriptionsRoutes from './subscriptionsRoutes.js';
+import transferRoutes from './transferRoutes.js';
+import custodyRoutes from './custodyRoutes.js';
+import financeRoutes from './financeRoutes.js';
+import reportRoutes from './reportRoutes.js';
 
 const router = express.Router();
 
@@ -14,6 +18,10 @@ router.use('/employees', employeeRoutes);
 router.use('/tasks', taskRoutes);
 router.use('/companies', companiesRoutes);
 router.use('/subscriptions', subscriptionsRoutes);
+router.use('/transfers', transferRoutes);
+router.use('/custodies', custodyRoutes);
+router.use('/finances', financeRoutes);
+router.use('/reports', reportRoutes);
 
 // API Info
 router.get('/', (req, res) => {
