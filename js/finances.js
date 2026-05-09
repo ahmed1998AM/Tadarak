@@ -5,6 +5,25 @@
 
 const Finances = {
     /**
+     * Permission checks using RBAC
+     */
+    canRequest() {
+        return RBAC.hasPermission('finances.request');
+    },
+    
+    canApprove() {
+        return RBAC.hasPermission('finances.approve');
+    },
+    
+    canCollect() {
+        return RBAC.hasPermission('finances.collect');
+    },
+    
+    canDelete() {
+        return RBAC.hasPermission('finances.delete');
+    },
+
+    /**
      * Initialize finances module
      */
     init() {
@@ -12,6 +31,7 @@ const Finances = {
         this.setupEventListeners();
         this.renderTable();
         this.updateSummary();
+        this.applyPermissions();
     },
 
     /**
@@ -38,6 +58,12 @@ const Finances = {
      */
     requestAdvance(advanceData) {
         try {
+            // Check permission
+            if (!this.canRequest()) {
+                Utils.showToast('ليس لديك صلاحية طلب سلفة', 'error');
+                return false;
+            }
+
             const finances = this.loadFinances();
             const currentUser = Auth.getCurrentUser();
 
@@ -91,6 +117,12 @@ const Finances = {
      */
     recordCollection(paymentData) {
         try {
+            // Check permission
+            if (!this.canCollect()) {
+                Utils.showToast('ليس لديك صلاحية تسجيل التحصيل', 'error');
+                return false;
+            }
+
             const finances = this.loadFinances();
             const index = finances.findIndex(f => f.id === paymentData.advanceId);
 
@@ -151,8 +183,9 @@ const Finances = {
      */
     review(id, status) {
         try {
-            if (!Auth.isAdmin()) {
-                Utils.showToast('ليس لديك صلاحية تنفيذ هذا الإجراء', 'error');
+            // Check permission
+            if (!this.canApprove()) {
+                Utils.showToast('ليس لديك صلاحية الموافقة على السلف', 'error');
                 return false;
             }
 
@@ -202,6 +235,12 @@ const Finances = {
      */
     delete(id) {
         try {
+            // Check permission
+            if (!this.canDelete()) {
+                Utils.showToast('ليس لديك صلاحية حذف السجلات المالية', 'error');
+                return false;
+            }
+
             if (!confirm(currentLang === 'ar' ? 'هل أنت متأكد من حذف هذا السجل؟' : 'Are you sure you want to delete this record?')) {
                 return false;
             }
@@ -287,7 +326,7 @@ const Finances = {
                 <td><span class="badge ${Utils.getStatusClass(finance.status)}">${Utils.getStatusLabel(finance.status)}</span></td>
                 <td>
                     <div class="action-buttons">
-                        ${finance.status === 'pending' && Auth.isAdmin() ? `
+                        ${finance.status === 'pending' && this.canApprove() ? `
                             <button class="btn-icon btn-approve" onclick="Finances.review('${finance.id}', 'approved')" title="${currentLang === 'ar' ? 'موافقة' : 'Approve'}">
                                 <i class="fas fa-check"></i>
                             </button>
@@ -295,12 +334,12 @@ const Finances = {
                                 <i class="fas fa-times"></i>
                             </button>
                         ` : ''}
-                        ${finance.status === 'approved' && Auth.isAdmin() ? `
+                        ${finance.status === 'approved' && this.canCollect() ? `
                             <button class="btn-icon btn-collection" onclick="Finances.showCollectionModal('${finance.id}')" title="${currentLang === 'ar' ? 'تحصيل' : 'Collect'}">
                                 <i class="fas fa-hand-holding-usd"></i>
                             </button>
                         ` : ''}
-                        ${finance.status === 'pending' && (!Auth.isAdmin() || finance.employeeId === currentUser?.id) ? `
+                        ${finance.status === 'pending' && this.canDelete() && (!this.canApprove() || finance.employeeId === currentUser?.id) ? `
                             <button class="btn-icon btn-delete" onclick="Finances.delete('${finance.id}')" title="${currentLang === 'ar' ? 'حذف' : 'Delete'}">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -309,6 +348,17 @@ const Finances = {
                 </td>
             </tr>
         `).join('');
+    },
+
+    /**
+     * Apply permissions to UI elements
+     */
+    applyPermissions() {
+        // Hide/show request button based on permission
+        const requestBtn = document.getElementById('requestAdvanceBtn');
+        if (requestBtn) {
+            requestBtn.style.display = this.canRequest() ? 'inline-block' : 'none';
+        }
     },
 
     /**
@@ -370,6 +420,12 @@ const Finances = {
      * Show request modal (simplified - uses prompt for now)
      */
     showRequestModal() {
+        // Check permission
+        if (!this.canRequest()) {
+            Utils.showToast('ليس لديك صلاحية طلب سلفة', 'error');
+            return;
+        }
+
         const amount = prompt(currentLang === 'ar' ? 'مبلغ السلفة:' : 'Advance amount:');
         if (!amount) return;
 
