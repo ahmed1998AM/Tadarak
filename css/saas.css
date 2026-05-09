@@ -1,0 +1,468 @@
+/* HR Pro System - SaaS Pricing Styles */
+
+/* ===== Pricing Modal ===== */
+.pricing-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-normal);
+}
+
+.pricing-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.pricing-modal .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+}
+
+.pricing-modal .modal-content {
+    position: relative;
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-lg);
+    max-width: 1200px;
+    width: calc(100% - var(--spacing-2xl));
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+    transform: scale(0.9) translateY(20px);
+    transition: all var(--transition-normal);
+    padding: var(--spacing-2xl);
+}
+
+.pricing-modal.show .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.modal-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.modal-header p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
+.modal-close {
+    position: absolute;
+    top: var(--spacing-lg);
+    left: var(--spacing-lg);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.modal-close:hover {
+    background: var(--danger-color);
+    color: white;
+    transform: rotate(90deg);
+}
+
+/* ===== Pricing Grid ===== */
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.plan-card {
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    position: relative;
+    transition: all var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-color);
+}
+
+.plan-card.popular {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.2);
+}
+
+.plan-card.popular::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.popular-badge {
+    position: absolute;
+    top: var(--spacing-md);
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-lg);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.plan-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.plan-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.plan-price {
+    margin-top: var(--spacing-md);
+}
+
+.plan-price .price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.plan-price .period {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.plan-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.plan-features li i {
+    color: var(--success-color);
+    font-size: 1.1rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.plan-action {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 2px solid var(--border-color);
+}
+
+.plan-action .btn {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.plan-action .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+}
+
+.plan-action .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(var(--primary-rgb), 0.4);
+}
+
+.plan-action .btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.plan-action .btn-outline:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* ===== Plan Specific Colors ===== */
+.plan-card.free {
+    --plan-color: #64748b;
+}
+
+.plan-card.starter {
+    --plan-color: #3b82f6;
+}
+
+.plan-card.professional {
+    --plan-color: #8b5cf6;
+}
+
+.plan-card.enterprise {
+    --plan-color: #f59e0b;
+}
+
+/* ===== Pricing Footer ===== */
+.pricing-footer {
+    text-align: center;
+    padding-top: var(--spacing-xl);
+    border-top: 2px solid var(--border-color);
+}
+
+.pricing-footer p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.pricing-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.pricing-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ===== Upgrade Banner ===== */
+.upgrade-banner {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    margin-bottom: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+    animation: slideDown 0.5s ease forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.upgrade-banner .banner-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex: 1;
+}
+
+.upgrade-banner .banner-content i {
+    font-size: 2rem;
+}
+
+.upgrade-banner .banner-content span {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.upgrade-banner .btn {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.upgrade-banner .btn:hover {
+    background: var(--bg-secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.banner-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all var(--transition-fast);
+}
+
+.banner-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+/* ===== Usage Indicators ===== */
+.usage-indicator {
+    margin-bottom: var(--spacing-lg);
+}
+
+.usage-bar {
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: var(--spacing-xs);
+}
+
+.usage-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--success-color), var(--primary-color));
+    border-radius: 4px;
+    transition: width var(--transition-slow);
+}
+
+.usage-indicator.warning .usage-fill {
+    background: linear-gradient(90deg, var(--warning-color), var(--danger-color));
+}
+
+.usage-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* ===== Subscription Badge ===== */
+.subscription-badge {
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-free {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.badge-starter {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary-color);
+}
+
+.badge-professional {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+}
+
+.badge-enterprise {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning-color);
+}
+
+/* ===== Responsive Styles ===== */
+@media (max-width: 768px) {
+    .pricing-modal .modal-content {
+        padding: var(--spacing-lg);
+        width: calc(100% - var(--spacing-lg));
+    }
+
+    .pricing-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .upgrade-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .upgrade-banner .banner-content {
+        flex-direction: column;
+    }
+
+    .modal-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .plan-price .price {
+        font-size: 2rem;
+    }
+}
+
+/* ===== Animation for Plan Cards ===== */
+.plan-card {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+.plan-card:nth-child(1) { animation-delay: 0.1s; }
+.plan-card:nth-child(2) { animation-delay: 0.2s; }
+.plan-card:nth-child(3) { animation-delay: 0.3s; }
+.plan-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
