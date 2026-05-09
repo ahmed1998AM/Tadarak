@@ -5,12 +5,28 @@
 
 const Transfers = {
     /**
+     * Permission checks using RBAC
+     */
+    canRequest() {
+        return RBAC.hasPermission('transfers.request');
+    },
+    
+    canReview() {
+        return RBAC.hasPermission('transfers.review');
+    },
+    
+    canDelete() {
+        return RBAC.hasPermission('transfers.delete');
+    },
+
+    /**
      * Initialize transfers module
      */
     init() {
         this.loadTransfers();
         this.setupEventListeners();
         this.renderTable();
+        this.applyPermissions();
     },
 
     /**
@@ -37,6 +53,12 @@ const Transfers = {
      */
     request(transferData) {
         try {
+            // Check permission
+            if (!this.canRequest()) {
+                Utils.showToast('ليس لديك صلاحية طلب النقل', 'error');
+                return false;
+            }
+
             const transfers = this.loadTransfers();
             const currentUser = Auth.getCurrentUser();
 
@@ -88,8 +110,9 @@ const Transfers = {
      */
     review(id, status) {
         try {
-            if (!Auth.isAdmin()) {
-                Utils.showToast('ليس لديك صلاحية تنفيذ هذا الإجراء', 'error');
+            // Check permission
+            if (!this.canReview()) {
+                Utils.showToast('ليس لديك صلاحية مراجعة طلبات النقل', 'error');
                 return false;
             }
 
@@ -150,6 +173,12 @@ const Transfers = {
      */
     delete(id) {
         try {
+            // Check permission
+            if (!this.canDelete()) {
+                Utils.showToast('ليس لديك صلاحية حذف طلبات النقل', 'error');
+                return false;
+            }
+
             if (!confirm(currentLang === 'ar' ? 'هل أنت متأكد من حذف هذا الطلب؟' : 'Are you sure you want to delete this request?')) {
                 return false;
             }
@@ -207,7 +236,7 @@ const Transfers = {
                 <td><span class="badge ${Utils.getStatusClass(transfer.status)}">${Utils.getStatusLabel(transfer.status)}</span></td>
                 <td>
                     <div class="action-buttons">
-                        ${transfer.status === 'pending' && Auth.isAdmin() ? `
+                        ${transfer.status === 'pending' && this.canReview() ? `
                             <button class="btn-icon btn-approve" onclick="Transfers.review('${transfer.id}', 'approved')" title="${currentLang === 'ar' ? 'موافقة' : 'Approve'}">
                                 <i class="fas fa-check"></i>
                             </button>
@@ -215,7 +244,7 @@ const Transfers = {
                                 <i class="fas fa-times"></i>
                             </button>
                         ` : ''}
-                        ${transfer.status === 'pending' && (!Auth.isAdmin() || transfer.employeeId === currentUser?.id) ? `
+                        ${transfer.status === 'pending' && this.canDelete() && (!this.canReview() || transfer.employeeId === currentUser?.id) ? `
                             <button class="btn-icon btn-delete" onclick="Transfers.delete('${transfer.id}')" title="${currentLang === 'ar' ? 'حذف' : 'Delete'}">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -224,6 +253,17 @@ const Transfers = {
                 </td>
             </tr>
         `).join('');
+    },
+
+    /**
+     * Apply permissions to UI elements
+     */
+    applyPermissions() {
+        // Hide/show request button based on permission
+        const requestBtn = document.getElementById('requestTransferBtn');
+        if (requestBtn) {
+            requestBtn.style.display = this.canRequest() ? 'inline-block' : 'none';
+        }
     },
 
     /**
@@ -259,6 +299,12 @@ const Transfers = {
      * Show request modal (simplified - uses prompt for now)
      */
     showRequestModal() {
+        // Check permission
+        if (!this.canRequest()) {
+            Utils.showToast('ليس لديك صلاحية طلب النقل', 'error');
+            return;
+        }
+
         const employees = Utils.storage.get('hr_employees', []);
         const currentUser = Auth.getCurrentUser();
         

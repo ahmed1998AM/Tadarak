@@ -19,6 +19,21 @@ const Custodies = {
     ],
 
     /**
+     * Permission checks using RBAC
+     */
+    canAssign() {
+        return RBAC.hasPermission('custodies.assign');
+    },
+    
+    canReturn() {
+        return RBAC.hasPermission('custodies.return');
+    },
+    
+    canDelete() {
+        return RBAC.hasPermission('custodies.delete');
+    },
+
+    /**
      * Initialize custodies module
      */
     init() {
@@ -26,6 +41,7 @@ const Custodies = {
         this.setupEventListeners();
         this.renderTable();
         this.checkAlerts();
+        this.applyPermissions();
     },
 
     /**
@@ -52,6 +68,12 @@ const Custodies = {
      */
     add(custodyData) {
         try {
+            // Check permission
+            if (!this.canAssign()) {
+                Utils.showToast('ليس لديك صلاحية إسناد عهد', 'error');
+                return false;
+            }
+
             const custodies = this.loadCustodies();
 
             const newCustody = {
@@ -97,6 +119,12 @@ const Custodies = {
      */
     return(id) {
         try {
+            // Check permission
+            if (!this.canReturn()) {
+                Utils.showToast('ليس لديك صلاحية إرجاع عهد', 'error');
+                return false;
+            }
+
             const custodies = this.loadCustodies();
             const index = custodies.findIndex(c => c.id === id);
 
@@ -125,6 +153,12 @@ const Custodies = {
      */
     delete(id) {
         try {
+            // Check permission
+            if (!this.canDelete()) {
+                Utils.showToast('ليس لديك صلاحية حذف عهد', 'error');
+                return false;
+            }
+
             if (!confirm(currentLang === 'ar' ? 'هل أنت متأكد من حذف هذه العهد؟' : 'Are you sure you want to delete this custody?')) {
                 return false;
             }
@@ -217,18 +251,31 @@ const Custodies = {
                 <td><span class="badge ${Utils.getStatusClass(custody.status)}">${Utils.getStatusLabel(custody.status)}</span></td>
                 <td>
                     <div class="action-buttons">
-                        ${custody.status === 'assigned' ? `
+                        ${custody.status === 'assigned' && this.canReturn() ? `
                             <button class="btn-icon btn-return" onclick="Custodies.return('${custody.id}')" title="${currentLang === 'ar' ? 'إرجاع' : 'Return'}">
                                 <i class="fas fa-undo"></i>
                             </button>
                         ` : ''}
-                        <button class="btn-icon btn-delete" onclick="Custodies.delete('${custody.id}')" title="${currentLang === 'ar' ? 'حذف' : 'Delete'}">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        ${this.canDelete() ? `
+                            <button class="btn-icon btn-delete" onclick="Custodies.delete('${custody.id}')" title="${currentLang === 'ar' ? 'حذف' : 'Delete'}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
                     </div>
                 </td>
             </tr>
         `).join('');
+    },
+
+    /**
+     * Apply permissions to UI elements
+     */
+    applyPermissions() {
+        // Hide/show add button based on permission
+        const addBtn = document.getElementById('addCustodyBtn');
+        if (addBtn) {
+            addBtn.style.display = this.canAssign() ? 'inline-block' : 'none';
+        }
     },
 
     /**
@@ -267,7 +314,8 @@ const Custodies = {
      * Show add modal (simplified - uses prompt for now)
      */
     showAddModal() {
-        if (!Auth.isAdmin()) {
+        // Check permission
+        if (!this.canAssign()) {
             Utils.showToast('ليس لديك صلاحية إضافة عهد', 'error');
             return;
         }
