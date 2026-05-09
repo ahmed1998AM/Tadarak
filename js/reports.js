@@ -9,6 +9,37 @@ const Reports = {
      */
     init() {
         this.setupEventListeners();
+        this.applyPermissions();
+    },
+
+    /**
+     * Apply permissions to UI elements
+     */
+    applyPermissions() {
+        if (typeof PermissionEnforcer !== 'undefined') {
+            PermissionEnforcer.init();
+        }
+        
+        // Check permissions for report generation buttons
+        const reportButtons = document.querySelectorAll('[data-report-type]');
+        reportButtons.forEach(btn => {
+            const reportType = btn.getAttribute('data-report-type');
+            const permission = `reports.${reportType}`;
+            
+            if (!RBAC.hasPermission(permission)) {
+                btn.style.display = 'none';
+            }
+        });
+    },
+
+    /**
+     * Check if user can generate specific report type
+     * @param {string} type - Report type
+     * @returns {boolean}
+     */
+    canGenerate(type) {
+        const permission = `reports.${type}`;
+        return RBAC.hasPermission(permission);
     },
 
     /**
@@ -17,6 +48,13 @@ const Reports = {
      * @param {string} format - Export format (pdf/excel/csv)
      */
     generate(type, format) {
+        // Permission check
+        if (!this.canGenerate(type)) {
+            Utils.showToast('ليس لديك صلاحية إنشاء هذا النوع من التقارير', 'error');
+            console.warn(`Permission denied: reports.${type}`);
+            return;
+        }
+
         switch (type) {
             case 'employees':
                 this.generateEmployeeReport(format);

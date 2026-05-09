@@ -655,10 +655,10 @@
                             <h3 data-lang="employeeReport">تقرير الموظفين</h3>
                             <p data-lang="employeeReportDesc">تقرير شامل عن جميع الموظفين</p>
                             <div class="report-actions">
-                                <button class="btn btn-sm btn-primary" onclick="generateReport('employees', 'pdf')">
+                                <button class="btn btn-sm btn-primary permission-required" data-permission="reports.employees" data-report-type="employees" onclick="generateReport('employees', 'pdf')">
                                     <i class="fas fa-file-pdf"></i> PDF
                                 </button>
-                                <button class="btn btn-sm btn-secondary" onclick="generateReport('employees', 'excel')">
+                                <button class="btn btn-sm btn-secondary permission-required" data-permission="reports.employees" data-report-type="employees" onclick="generateReport('employees', 'excel')">
                                     <i class="fas fa-file-excel"></i> Excel
                                 </button>
                             </div>
@@ -669,10 +669,10 @@
                             <h3 data-lang="tasksReport">تقرير المهام</h3>
                             <p data-lang="tasksReportDesc">أداء المهام والإنجازات</p>
                             <div class="report-actions">
-                                <button class="btn btn-sm btn-primary" onclick="generateReport('tasks', 'pdf')">
+                                <button class="btn btn-sm btn-primary permission-required" data-permission="reports.tasks" data-report-type="tasks" onclick="generateReport('tasks', 'pdf')">
                                     <i class="fas fa-file-pdf"></i> PDF
                                 </button>
-                                <button class="btn btn-sm btn-secondary" onclick="generateReport('tasks', 'excel')">
+                                <button class="btn btn-sm btn-secondary permission-required" data-permission="reports.tasks" data-report-type="tasks" onclick="generateReport('tasks', 'excel')">
                                     <i class="fas fa-file-excel"></i> Excel
                                 </button>
                             </div>
@@ -683,10 +683,10 @@
                             <h3 data-lang="financesReport">تقرير المالية</h3>
                             <p data-lang="financesReportDesc">السلف والتحصيلات المالية</p>
                             <div class="report-actions">
-                                <button class="btn btn-sm btn-primary" onclick="generateReport('finances', 'pdf')">
+                                <button class="btn btn-sm btn-primary permission-required" data-permission="reports.finances" data-report-type="finances" onclick="generateReport('finances', 'pdf')">
                                     <i class="fas fa-file-pdf"></i> PDF
                                 </button>
-                                <button class="btn btn-sm btn-secondary" onclick="generateReport('finances', 'excel')">
+                                <button class="btn btn-sm btn-secondary permission-required" data-permission="reports.finances" data-report-type="finances" onclick="generateReport('finances', 'excel')">
                                     <i class="fas fa-file-excel"></i> Excel
                                 </button>
                             </div>
@@ -697,10 +697,10 @@
                             <h3 data-lang="attendanceReport">تقرير الحضور</h3>
                             <p data-lang="attendanceReportDesc">سجل الحضور والغياب</p>
                             <div class="report-actions">
-                                <button class="btn btn-sm btn-primary" onclick="generateReport('attendance', 'pdf')">
+                                <button class="btn btn-sm btn-primary permission-required" data-permission="reports.attendance" data-report-type="attendance" onclick="generateReport('attendance', 'pdf')">
                                     <i class="fas fa-file-pdf"></i> PDF
                                 </button>
-                                <button class="btn btn-sm btn-secondary" onclick="generateReport('attendance', 'excel')">
+                                <button class="btn btn-sm btn-secondary permission-required" data-permission="reports.attendance" data-report-type="attendance" onclick="generateReport('attendance', 'excel')">
                                     <i class="fas fa-file-excel"></i> Excel
                                 </button>
                             </div>
