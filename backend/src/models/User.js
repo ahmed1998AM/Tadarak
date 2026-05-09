@@ -152,6 +152,21 @@ userSchema.methods.resetLoginAttempts = function() {
   });
 };
 
+// Generate JWT token
+userSchema.methods.generateAuthToken = function() {
+  const jwt = require('jsonwebtoken');
+  return jwt.sign(
+    { 
+      id: this._id, 
+      email: this.email, 
+      role: this.role,
+      company: this.company 
+    },
+    process.env.JWT_SECRET || 'default-secret',
+    { expiresIn: '24h' }
+  );
+};
+
 const User = mongoose.model('User', userSchema);
 
 export default User;

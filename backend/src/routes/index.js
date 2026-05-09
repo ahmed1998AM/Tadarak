@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import authRoutes from './authRoutes.js';
 import employeeRoutes from './employeeRoutes.js';
 import taskRoutes from './taskRoutes.js';
+import companiesRoutes from './companiesRoutes.js';
+import subscriptionsRoutes from './subscriptionsRoutes.js';
 
 const router = express.Router();
 
@@ -10,6 +12,8 @@ const router = express.Router();
 router.use('/auth', authRoutes);
 router.use('/employees', employeeRoutes);
 router.use('/tasks', taskRoutes);
+router.use('/companies', companiesRoutes);
+router.use('/subscriptions', subscriptionsRoutes);
 
 // API Info
 router.get('/', (req, res) => {
