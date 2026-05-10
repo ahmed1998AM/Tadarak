@@ -2,37 +2,77 @@
 # Dependencies
 node_modules/
 
+# Editors
+.vscode/
+
 # Environment
 .env
 .env.local
 .env.*
 
+# Build artifacts
+dist/
+build/
+target/
+
 # Logs and temp files
 *.log
 *.tmp
-
-# Editors
-.vscode/
-.idea/
 
 # Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-venv/
-.venv/
-.env
-.env.local
-.env.*
-.pytest_cache/
-.mypy_cache/
-.coverage
-htmlcov/
 
-# Build artifacts
-dist/
-build/
-*.egg-info/
+# Java
+*.class
+*.jar
+*.war
+
+# C/C++
+*.o
+*.obj
+*.so
+*.a
+*.dll
+*.exe
+
+# Compression
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# MyPy
+.mypy_cache/
+
+# PyTest
+.pytest_cache/
+
+# Gradle
+.gradle/
+
+# System files
+.DS_Store
+Thumbs.db
 ```

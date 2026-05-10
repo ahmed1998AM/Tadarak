@@ -5,7 +5,11 @@
 
 class ApiService {
     constructor() {
-        this.baseURL = window.location.origin + '/api';
+        // Use AppConfig if available, otherwise fallback to current origin
+        this.baseURL = window.AppConfig ? 
+            window.AppConfig.API_BASE_URL : 
+            window.location.origin + '/api';
+        
         this.token = localStorage.getItem('hrpro_token');
         this.refreshToken = localStorage.getItem('hrpro_refresh_token');
         this.currentCompany = localStorage.getItem('hrpro_company_id');
