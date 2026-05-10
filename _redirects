@@ -1,0 +1,5 @@
+# API Redirects for Netlify
+# استبدل hrpro-backend-xxxx.onrender.com برابط Backend الفعلي بعد النشر
+
+/api/*  https://hrpro-backend-xxxx.onrender.com/api/:splat  200!
+/*      /index.html                                          200
